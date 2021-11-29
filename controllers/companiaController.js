@@ -71,7 +71,7 @@ showAllCompanies = (req, res) => {
         res.send({
           success: true,
           message: "Si encontro resultado", 
-          data:  JSON.stringify(data),
+          data:  data,
         });
       }
     })  

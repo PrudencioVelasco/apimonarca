@@ -62,6 +62,22 @@ User.registrarUsuario = (newUsuario, result) => {
     result(null, { id: res.insertId, ...newUsuario });
   });
 };
+User.updateUsuario = (uid,nombre,imagen, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tbluser SET userName = ?, imageUrl = ? WHERE uid = ?";
+  dbConn.query(sql, [nombre,imagen,uid], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+};
 /*
 User.getAll = result => {
   dbConn.query("SELECT * FROM users", (err, res) => {

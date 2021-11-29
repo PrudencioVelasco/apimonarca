@@ -19,4 +19,17 @@ SitiosInteres.obtenerSitiosInteres = (idlugar,result)=>{
       result(null, res);
     });
   };
+  SitiosInteres.obtenerSitiosInteresv2 = (idlugar,result)=>{
+    let sql = "SELECT s.sitiosinteres as descripcion FROM tblsitiointeresv2 s WHERE s.idlugar = ?";
+    dbConn.query(sql, [idlugar], (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      console.log("customers: ", res);
+      result(null, res);
+    });
+  };
 module.exports = SitiosInteres;

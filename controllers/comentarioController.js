@@ -1,4 +1,4 @@
-const {Comentario,ComentarioLugar} = require('../models/comentario');
+const {Comentario,ComentarioLugar,ReporteComentarioLugar} = require('../models/comentario');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key');  
@@ -41,6 +41,47 @@ agregarComentario = (req, res) => {
     });
   };
 
+  agregarReporteComentarioLugar = (req, res) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+   
+    const reporte = new ReporteComentarioLugar({
+      idcomentario: req.body.idcomentario,
+      idcausareporte : req.body.idcausareporte, 
+      comentario : req.body.comentario,  
+      idusuario: req.uid, 
+      fecharegistro:new Date(), 
+      atendido: 0,
+      eliminado: 0
+    });
+  
+    // Save Customer in the database
+    Comentario.insertarReporteComentarioLugar(reporte, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while creating the Customer.",
+          error: err.message
+        });
+      }
+      else {
+      
+            res.send({
+              success: true,
+              message: "Registrado con exito!",
+              data: data.id,
+            });
+         
+        
+      }
+    });
+  };
   agregarComentarioLugar = (req, res) => {
     // Validate request
     if (!req.body) {
@@ -62,7 +103,7 @@ agregarComentario = (req, res) => {
     });
   
     // Save Customer in the database
-    Comentario.insertarComentario(comentario, (err, data) => {
+    Comentario.insertarComentarioLugar(comentario, (err, data) => {
       if (err) {
         res.status(500).send({
           success: false,
@@ -141,6 +182,35 @@ obtenerComentariosPorLugar = (req, res) => {
         res.send({
           success: true,
           message: "Si encontro resultado",
+          data: data,
+        });
+      }
+    });
+  };
+  eliminarComentariov2 = (req, res) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+  
+    let valor = req.body.idcomentario;
+    Comentario.eliminarComentariov2(valor, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while creating the Customer.",
+          error: err.message
+        });
+      }
+      else {
+         
+        res.send({
+          success: true,
+          message: "Fue eliminado el cometario con exito.",
           data: data,
         });
       }
@@ -241,5 +311,7 @@ module.exports = {
     totalComentarioLugar,
     totalComentarioLugarUsuario,
     agregarComentarioLugar,
-    obtenerComentariosLugarv2
+    obtenerComentariosLugarv2,
+    eliminarComentariov2,
+    agregarReporteComentarioLugar
   }

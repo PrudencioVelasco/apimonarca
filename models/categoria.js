@@ -16,6 +16,17 @@ Categoria.todasCategorias = result => {
         result(null, res);
     });
 };
+Categoria.todasCategoriasPrincipal = result => {
+  dbConn.query("SELECT * FROM tblclasificacion WHERE principal = 1 ORDER BY nombreclasificacion ASC ", (err, res) => {
+      if (err) {
+          console.log("error: ", err);
+          result(null, err);
+          return;
+      } 
+      console.log("customers: ", res);
+      result(null, res);
+  });
+};
 Categoria.categoriasPorLugar = (idlugar, result) => {
     //let email = usuario.email;
     //let password = usuario.password;

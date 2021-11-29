@@ -239,15 +239,45 @@ singInFacebook  =  async (req, res,next)  => {
             }
           } 
           else {
-            console.log(data.idusuario);
-             //EXISTE EL REGISTRO EN LA BASE DE DATOS
-          const token = await generarJWT(data.idusuario);
-            res.send({
-              success: true,
-              message: "Si encontro resultado",
-              token:token,
-              data: data,
+            //EXISTE EL REGISTRO EN LA BASE DE DATOS
+            Usuario.updateUsuario(response.id,response.name,(response.picture.data.url !="")?response.picture.data.url:"", async (err, data)  => {
+              if (err) {
+                res.status(500).send({
+                  success: false,
+                  message:
+                    err.message || "Ocurrio un error al asignarle el rol.",
+                  error: err.message
+                });
+              } else {
+                
+                Usuario.validarExistenciaUsuario(response.id, async (err, data)  => {
+                   if (err) {
+                          res.status(500).send({
+                            success: false,
+                            message:
+                              err.message || "Ocurrio un error al asignarle el rol.",
+                            error: err.message
+                          });
+                       
+                  } 
+                  else {
+                    const token = await generarJWT(data.idusuario);
+                    res.send({
+                      success: true,
+                      message: "Si encontro resultado",
+                      token:token,
+                      data: data,
+                    });
+                  }
+                });
+              //  console.log(data.id);
+             
+              
+              }
+
             });
+          
+
           }
         })
 

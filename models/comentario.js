@@ -17,6 +17,16 @@ const ComentarioLugar = function (comentario) {
   this.fecharegistro = comentario.fecharegistro;
   this.idusuario = comentario.idusuario; 
 };
+const ReporteComentarioLugar = function (comentario) {
+  this.idreportecomentariolugar = comentario.idreportecomentariolugar;
+  this.idcomentario  = comentario.idcomentario;
+  this.idcausareporte = comentario.idcausareporte;
+  this.comentario   = comentario.comentario;
+  this.idusuario = comentario.idusuario;
+  this.fecharegistro = comentario.fecharegistro;
+  this.atendido  = comentario.atendido;
+  this.eliminado  = comentario.eliminado; 
+};
 
 Comentario.insertarComentario = (newComentario, result) => {
   dbConn.query("INSERT INTO tblcomentario SET ?", newComentario, (err, res) => {
@@ -42,6 +52,21 @@ Comentario.insertarComentarioLugar = (newComentario, result) => {
     result(null, { id: res.insertId, ...newComentario });
   });
 };
+Comentario.insertarReporteComentarioLugar = (newReporteComentario, result) => {
+
+  dbConn.query("INSERT INTO tblreportecomentariolugar SET ?", newReporteComentario, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created customer: ", { id: res.insertId });
+    result(null, { id: res.insertId, ...newReporteComentario });
+  });
+
+};
+
 Comentario.obtenerComentariosPorLugar = (
   idlugar,
   idcomentario,
@@ -95,8 +120,8 @@ Comentario.obtenerComentariosLugarv2 = (
     "u.imageUrl, " +
     "c.idcomentario , " +
     "c.comentario , " +
-    "c.taring , " +
-    "DATE_FORMAT(c.fecharegistro,'%d/%m/%Y') AS fecha " +
+    "c.rating , " +
+    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
     " from " +
     " tblcomentariolugar c " +
     " inner join tbluser u on " +
@@ -105,7 +130,7 @@ Comentario.obtenerComentariosLugarv2 = (
   if (idcomentario != "") {
     sql += " and  c.idcomentario > "+idcomentario;
   }
-  sql += " ORDER BY c.fecha DESC ";
+  sql += " ORDER BY c.fechavisito DESC ";
   if (limite != "") {
     sql += " LIMIT "+limite;
   }
@@ -137,9 +162,25 @@ Comentario.eliminarComentario = (idcomentario, result) => {
     return;
   });
 };
+Comentario.eliminarComentariov2 = (idcomentario, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tblcomentariolugar SET eliminado = 1 WHERE idcomentario = ?";
+  dbConn.query(sql, [idcomentario], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+};
 Comentario.totalComentarioLugar = (idlugar, result) => {
   dbConn.query(
-    "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentario c WHERE c.idlugar = ? ",
+    "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentariolugar c WHERE c.eliminado = 0 AND c.idlugar = ? ",
     [idlugar],
     (err, res) => {
       if (err) {
@@ -160,7 +201,7 @@ Comentario.totalComentarioLugar = (idlugar, result) => {
 };
 Comentario.totalComentarioLugarUsuario = (idlugar,idusuario, result) => {
   dbConn.query(
-    "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentario c WHERE c.idlugar = ? AND c.idusuario = ? ",
+    "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentariolugar c WHERE c.eliminado = 0 AND c.idlugar = ? AND c.idusuario = ? ",
     [idlugar,idusuario],
     (err, res) => {
       if (err) {
@@ -181,5 +222,6 @@ Comentario.totalComentarioLugarUsuario = (idlugar,idusuario, result) => {
 };
 module.exports = {
   Comentario,
-  ComentarioLugar
+  ComentarioLugar,
+  ReporteComentarioLugar
 };

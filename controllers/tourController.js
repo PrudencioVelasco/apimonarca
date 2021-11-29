@@ -1,9 +1,9 @@
-const Categoria = require('../models/categoria');
+const Tour = require('../models/tour');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key'); 
-todasCategorias = (req, res) => {
-    Categoria.todasCategorias((err, data) => {
+todosLosTours = (req, res) => {
+    Tour.todosLosTours((err, data) => {
       if (err)
         res.status(500).send({
           success: false,
@@ -17,8 +17,8 @@ todasCategorias = (req, res) => {
       });
     });
   };
-  todasCategoriasPrincipal = (req, res) => {
-    Categoria.todasCategoriasPrincipal((err, data) => {
+  todosLosLoves = (req, res) => {
+    Tour.todosLosLoves((err, data) => {
       if (err)
         res.status(500).send({
           success: false,
@@ -32,7 +32,7 @@ todasCategorias = (req, res) => {
       });
     });
   };
-  categoriasPorLugar = (req, res) => {
+  todosLosComentarios = (req, res) => {
     if (!req.body) {
       res.status(400).send({
         success: false,
@@ -40,26 +40,24 @@ todasCategorias = (req, res) => {
       });
     }
   
-    Categoria.categoriasPorLugar(req.body.idlugar, (err, data) => {
-      if (err) {
+    let idtour = req.body.idtour;
+    Tour.todosLosComentarios(idtour,(err, data) => {
+      if (err)
         res.status(500).send({
           success: false,
           message:
             err.message || "Some error occurred while retrieving customers."
         });
-      }
-      else {
-         
-        res.send({
-          success: true,
-          message: "Si encontro resultado",
-          data: data,
-        });
-      }
+      else res.send({
+        success: true,
+        message: "Exito",
+        data: data
+      });
     });
-  }; 
+  };
+  
 module.exports = {
-    todasCategorias,
-    categoriasPorLugar,
-    todasCategoriasPrincipal
+    todosLosTours,
+    todosLosLoves,
+    todosLosComentarios
   }

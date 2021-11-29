@@ -19,7 +19,9 @@ const conquienvisito = require('./routers/conQuienVisitoRouters');
 const causareporte = require('./routers/causaReporteRouters');
 const compania = require('./routers/companiaRouters');
 const tour = require('./routers/tourRouters');
- app.use(express.static(__dirname + '/assets/lugares'));
+const telefono = require('./routers/telefonoRouter');
+
+app.use(express.static(__dirname + '/assets/lugares'));
 
 const port = process.env.PORT || 3000;
 
@@ -52,6 +54,7 @@ conquienvisito(app);
 causareporte(app);
 compania(app);
 tour(app);
+telefono(app);
 
 
 module.exports ={

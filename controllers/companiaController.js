@@ -67,10 +67,11 @@ showAllCompanies = (req, res) => {
       } 
       else {
          //EXISTE EL REGISTRO EN LA BASE DE DATOS 
+         
         res.send({
           success: true,
           message: "Si encontro resultado", 
-          data: data,
+          data:  JSON.stringify(data),
         });
       }
     })  

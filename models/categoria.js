@@ -39,9 +39,9 @@ Categoria.categoriasPorLugar = (idlugar, result) => {
         "union  all "+
         "select   280490 as idlugarprincipal,280490 as idlugarsecundario , 280490 as idclasificacion , 'ubication' nombreclasificacion " +
         "union  all "+
-        "select   280491 as idlugarprincipal,280490 as idlugarsecundario , 280490 as idclasificacion , 'restaurant' nombreclasificacion " +
+        "select   280491 as idlugarprincipal,280491 as idlugarsecundario , 280491 as idclasificacion , 'restaurant' nombreclasificacion " +
         "union  all "+
-        "select   280492 as idlugarprincipal,280490 as idlugarsecundario , 280490 as idclasificacion , 'hotel' nombreclasificacion) tbl";
+        "select   280492 as idlugarprincipal,280492 as idlugarsecundario , 280492 as idclasificacion , 'hotel' nombreclasificacion) tbl";
     dbConn.query(sql, [idlugar], (err, res) => {
       if (err) {
         console.log("error: ", err);

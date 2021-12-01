@@ -8,7 +8,18 @@ const Comentario = function (comentario) {
 };
 const ComentarioLugar = function (comentario) {
   this.idcomentario = comentario.idcomentario;
-  this.idlugar = comentario.idlugar;
+  this.idlugar = comentario.idlugar; 
+  this.idconquienvisito = comentario.idconquienvisito;
+  this.rating = comentario.rating;
+  this.comentario = comentario.comentario;
+  this.fechavisito = comentario.fechavisito;
+  this.eliminado = comentario.eliminado;
+  this.fecharegistro = comentario.fecharegistro;
+  this.idusuario = comentario.idusuario; 
+};
+const ComentarioTour = function (comentario) {
+  this.idcomentario = comentario.idcomentario;
+  this.idtour = comentario.idtour; 
   this.idconquienvisito = comentario.idconquienvisito;
   this.rating = comentario.rating;
   this.comentario = comentario.comentario;
@@ -146,6 +157,46 @@ Comentario.obtenerComentariosLugarv2 = (
     result(null, res);
   });
 };
+Comentario.obtenerComentariosTour= (
+  idtour,
+  idcomentario,
+  limite,
+  result
+) => {
+  let sql =
+    "select " +
+    "u.uid, " +
+    "u.idusuario, " +
+    "u.userName, " +
+    "u.imageUrl, " +
+    "c.idcomentario , " +
+    "c.comentario , " +
+    "c.rating , " +
+    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
+    " from " +
+    " tblcomentariotour c " +
+    " inner join tbluser u on " +
+    " u.idusuario = c.idusuario " +
+    "where c.idtour  = ? and c.eliminado = 0 ";
+  if (idcomentario != "") {
+    sql += " and  c.idcomentario > "+idcomentario;
+  }
+  sql += " ORDER BY c.fechavisito DESC ";
+  if (limite != "") {
+    sql += " LIMIT "+limite;
+  }
+  
+  dbConn.query(sql, [idtour], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+};
 Comentario.eliminarComentario = (idcomentario, result) => {
   //let email = usuario.email;
   //let password = usuario.password;
@@ -223,5 +274,6 @@ Comentario.totalComentarioLugarUsuario = (idlugar,idusuario, result) => {
 module.exports = {
   Comentario,
   ComentarioLugar,
-  ReporteComentarioLugar
+  ReporteComentarioLugar,
+  ComentarioTour
 };

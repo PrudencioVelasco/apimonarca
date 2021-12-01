@@ -1,4 +1,4 @@
-const {Comentario,ComentarioLugar,ReporteComentarioLugar} = require('../models/comentario');
+const {Comentario,ComentarioLugar,ReporteComentarioLugar,ComentarioTour} = require('../models/comentario');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key');  
@@ -304,6 +304,37 @@ obtenerComentariosPorLugar = (req, res) => {
       }
     });
   };
+  obtenerComentariosTour = (req, res) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+  
+    let idtour = req.body.idtour;
+    let idcomentario = req.body.idcomentario;
+    let limite = req.body.limite;
+    Comentario.obtenerComentariosTour(idtour,idcomentario,limite, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while creating the Customer.",
+          error: err.message
+        });
+      }
+      else {
+         
+        res.send({
+          success: true,
+          message: "Si encontro resultado",
+          data: data,
+        });
+      }
+    });
+  };
 module.exports = {
   deleteComentario,
     agregarComentario,
@@ -313,5 +344,6 @@ module.exports = {
     agregarComentarioLugar,
     obtenerComentariosLugarv2,
     eliminarComentariov2,
-    agregarReporteComentarioLugar
+    agregarReporteComentarioLugar,
+    obtenerComentariosTour
   }

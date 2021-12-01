@@ -25,7 +25,7 @@ todoLosTelefonos = (req, res) => {
     }
   
     let idcompania = req.body.idcompania;
-    Telefono.telefonosCompania(valor, (err, data) => {
+    Telefono.telefonosCompania(idcompania, (err, data) => {
       if (err) {
         res.status(500).send({
           success: false,

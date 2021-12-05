@@ -3,7 +3,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key'); 
 todosLosTours = (req, res) => {
-    Tour.todosLosTours((err, data) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+    Tour.todosLosTours(req.body.texto,(err, data) => {
       if (err)
         res.status(500).send({
           success: false,
@@ -18,7 +24,13 @@ todosLosTours = (req, res) => {
     });
   };
   todosLosLoves = (req, res) => {
-    Tour.todosLosLoves((err, data) => {
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+    Tour.todosLosLoves(req.body.idtour,(err, data) => {
       if (err)
         res.status(500).send({
           success: false,

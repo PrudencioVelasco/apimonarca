@@ -1,4 +1,4 @@
-const {Comentario,ComentarioLugar,ReporteComentarioLugar,ComentarioTour} = require('../models/comentario');
+const {Comentario,ComentarioLugar,ReporteComentarioLugar,ComentarioTour,ReporteComentarioTour} = require('../models/comentario');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key');  
@@ -62,6 +62,47 @@ agregarComentario = (req, res) => {
   
     // Save Customer in the database
     Comentario.insertarReporteComentarioLugar(reporte, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while creating the Customer.",
+          error: err.message
+        });
+      }
+      else {
+      
+            res.send({
+              success: true,
+              message: "Registrado con exito!",
+              data: data.id,
+            });
+         
+        
+      }
+    });
+  };
+  agregarReporteComentarioTour = (req, res) => {
+    // Validate request
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+   
+    const reporte = new ReporteComentarioTour({
+      idcomentario: req.body.idcomentario,
+      idcausareporte : req.body.idcausareporte, 
+      comentario : req.body.comentario,  
+      idusuario: req.uid, 
+      fecharegistro:new Date(), 
+      atendido: 0,
+      eliminado: 0
+    });
+  
+    // Save Customer in the database
+    Comentario.insertarReporteComentarioTour(reporte, (err, data) => {
       if (err) {
         res.status(500).send({
           success: false,
@@ -345,5 +386,6 @@ module.exports = {
     obtenerComentariosLugarv2,
     eliminarComentariov2,
     agregarReporteComentarioLugar,
+    agregarReporteComentarioTour,
     obtenerComentariosTour
   }

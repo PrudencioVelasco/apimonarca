@@ -11,6 +11,7 @@ module.exports = app => {
     app.post("/monarca/comentario/totalComentarioLugar", comentarioController.totalComentarioLugar); 
     app.post("/monarca/comentario/totalComentarioLugarUsuario", comentarioController.totalComentarioLugarUsuario);
     app.post("/monarca/comentario/agregarReporteComentarioLugar",validarJWT, comentarioController.agregarReporteComentarioLugar);  
+    app.post("/monarca/comentario/agregarReporteComentarioTour",validarJWT, comentarioController.agregarReporteComentarioTour);  
     app.post("/monarca/comentario/obtenerComentariosTour",comentarioController.obtenerComentariosTour);  
   
 }

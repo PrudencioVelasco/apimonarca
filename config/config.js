@@ -5,7 +5,8 @@ var connection = mysql.createConnection({
     host     : 'localhost',
     database : 'dbmonarca',
     user     : 'root',
-    password : '',
+    password : '28duguer',
+    multipleStatements:true,
 });
 connection.connect(error => {
     if (error) throw error;

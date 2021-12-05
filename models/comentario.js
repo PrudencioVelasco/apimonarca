@@ -38,6 +38,16 @@ const ReporteComentarioLugar = function (comentario) {
   this.atendido  = comentario.atendido;
   this.eliminado  = comentario.eliminado; 
 };
+const ReporteComentarioTour = function (comentario) {
+  this.idreportecomentariotour = comentario.idreportecomentariotour;
+  this.idcomentario  = comentario.idcomentario;
+  this.idcausareporte = comentario.idcausareporte;
+  this.comentario   = comentario.comentario;
+  this.idusuario = comentario.idusuario;
+  this.fecharegistro = comentario.fecharegistro;
+  this.atendido  = comentario.atendido;
+  this.eliminado  = comentario.eliminado; 
+};
 
 Comentario.insertarComentario = (newComentario, result) => {
   dbConn.query("INSERT INTO tblcomentario SET ?", newComentario, (err, res) => {
@@ -66,6 +76,20 @@ Comentario.insertarComentarioLugar = (newComentario, result) => {
 Comentario.insertarReporteComentarioLugar = (newReporteComentario, result) => {
 
   dbConn.query("INSERT INTO tblreportecomentariolugar SET ?", newReporteComentario, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created customer: ", { id: res.insertId });
+    result(null, { id: res.insertId, ...newReporteComentario });
+  });
+
+};
+Comentario.insertarReporteComentarioTour = (newReporteComentario, result) => {
+
+  dbConn.query("INSERT INTO tblreportecomentariotour SET ?", newReporteComentario, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);

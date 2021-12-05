@@ -13,8 +13,13 @@ const Tour = function (tour) {
     this.fechafinal = tour.fechafinal; 
     this.activo = tour.activo;  
 };
-Tour.todosLosTours = result => {
-    dbConn.query("SELECT * FROM vwtours", (err, res) => {
+Tour.todosLosTours =(texto,result) => {
+   let   sql = `SELECT * FROM vwtours `;
+   if(texto!=""){
+    sql += ` where (nombre like '%${texto}%' or descripcion like '%${texto}%' or informacion like '%${texto}%' or actividad like '%${texto}%')`;
+   }
+    dbConn.query(sql, (err, res) => {
+
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -24,8 +29,9 @@ Tour.todosLosTours = result => {
         result(null, res);
     });
 };
-Tour.todosLosLoves = result => {
-    dbConn.query("SELECT * FROM tbllove_tour", (err, res) => {
+Tour.todosLosLoves = (idtour,result) => {
+    var sql ="SELECT * FROM tbllove_tour WHERE idtour = ?";
+    dbConn.query(sql, [idtour], (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);
@@ -35,6 +41,7 @@ Tour.todosLosLoves = result => {
         result(null, res);
     });
 };
+
 Tour.todosLosComentarios = (idtour,result) => {
       var sql ="SELECT * FROM tblcomentariotour WHERE idtour = ?";
     dbConn.query(sql, [idtour], (err, res) => { 

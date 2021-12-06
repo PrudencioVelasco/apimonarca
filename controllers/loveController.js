@@ -100,17 +100,10 @@ totalLoveLugarUsuario = (req, res) => {
         message: "Content can not be empty!"
       });
     }
-  
-    //const encriptado = bcrypt.hashSync(req.body.password, 10);
-    // Create a Customer
-    const newLove = new Love({
-      idlugar: req.body.idlugar,
-      idusuario: req.uid
-    });
-  
-    // Save Customer in the database
-    Love.registrarLove(newLove, (err, data) => {
-      if (err) {
+   
+   
+    Love.registrarLove(1,req.body.idlugar, req.uid, (err, data) => {
+      if (err) { 
         res.status(500).send({
           success: false,
           message:

@@ -62,20 +62,22 @@ Love.totalLoveTourUsuario = (idtour, idusuario, result) => {
   });
 };
 
-Love.registrarLove = (newRegistro, result) => {
-  dbConn.query("INSERT INTO tbllove  SET ?", newRegistro, (err, res) => {
+Love.registrarLove = (opcion,idlugar,idusuario, result) => {
+  dbConn.query(`CALL spAgregarLove('${opcion}','${idlugar}','${idusuario}',@success);`);
+  dbConn.query(" SELECT @success;", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created customer: ", { id: res.insertId });
-    result(null, { id: res.insertId, ...newRegistro });
+    console.log("found customer: ", res[0]);
+      result(null, res[0]);
+      return;
   });
 };
 Love.registrarLoveTour = (opcion,idtour,idusuario, result) => {
-  dbConn.query(`CALL spAgregarLove(2,'${idtour}','${idusuario}',@success);`);
+  dbConn.query(`CALL spAgregarLove('${opcion}','${idtour}','${idusuario}',@success);`);
   dbConn.query(" SELECT @success;", (err, res) => {
     if (err) {
       console.log("error: ", err);

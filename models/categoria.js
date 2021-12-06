@@ -30,18 +30,13 @@ Categoria.todasCategoriasPrincipal = result => {
 Categoria.categoriasPorLugar = (idlugar, result) => {
     //let email = usuario.email;
     //let password = usuario.password;
-    let sql = "select tbl.idlugarprincipal, tbl.idlugarsecundario , tbl.idclasificacion , tbl.nombreclasificacion from (select ll.idlugarprincipal, ll.idlugarsecundario , c.idclasificacion , c.nombreclasificacion from tbllugar l "+
-        "inner join tbllugardentrolugar ll on l.idlugar = ll.idlugarprincipal "+
-        "inner join tbllugar l2 on ll.idlugarsecundario = l2.idlugar "+
-        "inner join tblclasificacion c on c.idclasificacion = l2.idclasificacion where ll.idlugarprincipal = ? "+
-        "and c.idclasificacion not in (1,3,4,9) "+
-        "group by c.idclasificacion "+
+    let sql = "select tbl.idlugarprincipal, tbl.idlugarsecundario , tbl.idclasificacion , tbl.nombreclasificacion from ( "+
+      
+       " select   280490 as idlugarprincipal,280493 as idlugarsecundario , 280496 as idclasificacion , 'ubication' nombreclasificacion " +
         "union  all "+
-        "select   280490 as idlugarprincipal,280490 as idlugarsecundario , 280490 as idclasificacion , 'ubication' nombreclasificacion " +
+        "select   280491 as idlugarprincipal,280494 as idlugarsecundario , 280497 as idclasificacion , 'restaurant' nombreclasificacion " +
         "union  all "+
-        "select   280491 as idlugarprincipal,280491 as idlugarsecundario , 280491 as idclasificacion , 'restaurant' nombreclasificacion " +
-        "union  all "+
-        "select   280492 as idlugarprincipal,280492 as idlugarsecundario , 280492 as idclasificacion , 'hotel' nombreclasificacion) tbl";
+        "select   280492 as idlugarprincipal,280495 as idlugarsecundario , 280498 as idclasificacion , 'hotel' nombreclasificacion) tbl";
     dbConn.query(sql, [idlugar], (err, res) => {
       if (err) {
         console.log("error: ", err);

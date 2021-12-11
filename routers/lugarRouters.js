@@ -8,5 +8,6 @@ module.exports = app => {
     app.post("/monarca/lugar/obtenerLugaresDentroLugar", lugaresController.obtenerLugaresDentroLugar); 
     app.post("/monarca/lugar/obtenerLugaresPorCategoria", lugaresController.obtenerLugaresPorCategoria);
     app.get("/monarca/lugar/obtenerDetalleLugar", lugaresController.obtenerDetalleLugar);
+    app.post("/monarca/lugar/buscarLugaresActivosIn", lugaresController.buscarLugaresActivosIn);
   
 }

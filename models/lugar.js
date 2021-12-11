@@ -196,4 +196,18 @@ Lugar.obtenerDetalleLugar = (idlugar,result)=>{
   });
 };
 
+Lugar.buscarLugaresActivosIn = (valor,result) => {
+  let sql = `select * from vwtodoslugaresactivo where idlugar IN (${valor}) `;
+  dbConn.query(sql, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+};
+
 module.exports = Lugar;

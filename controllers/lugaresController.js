@@ -205,6 +205,63 @@ buscarLugaresActivos = (req, res) => {
   });
 };
 
+
+buscarLugaresActivosIn = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  let valor = req.body.idslugares;
+  Lugar.buscarLugaresActivosIn(valor, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else {
+      var jsonArr = [];
+      for (var i = 0; i < data.length; i++) {
+
+       // let urlimagen = 'http://10.0.2.2:3000/' + data[i].primeraimagen;
+
+       // let urlimagen =  process.env.CONF_URL+ data[i].primeraimagen;
+        let urlimagen  ="";
+        if(data[i].primeraimagen != null  ){
+            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
+        }
+        jsonArr.push({
+          idlugar: data[i].idlugar,
+          nombre: data[i].nombre,
+          direccion: data[i].direccion,
+          latitud: data[i].latitud,
+          longitud: data[i].longitud,
+          descripcion: data[i].descripcion,
+          historia: data[i].historia,
+          resena: data[i].resena,
+          love: data[i].love,
+          comentario: data[i].comentario,
+          rating: data[i].rating,
+          primeraimagen: data[i].primeraimagen,
+          nombreclasificacion: data[i].nombreclasificacion, 
+          principal: data[i].principal
+        });
+      }
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: jsonArr,
+      });
+    }
+  });
+};
+
 obtenerLugaresPorCategoria = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -386,5 +443,6 @@ module.exports = {
   obtenerImagenesLugar,
   obtenerLugaresDentroLugar,
   obtenerLugaresPorCategoria,
-  obtenerDetalleLugar
+  obtenerDetalleLugar,
+  buscarLugaresActivosIn
 }

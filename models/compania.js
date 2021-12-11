@@ -60,4 +60,17 @@ Compania.mostrarCompaniasXClasificacion  = (idclasificacion ,result)=>{
       result({ kind: "not_found" }, null);
     });
   };
+  Compania.buscarCompania = (idclasificacion,valor,result) => {
+    let sql = `select * from vwcompania where idclasificacion = '${idclasificacion}' and concat(nombre,direccion,actividad) like '%${valor}%' `;
+    dbConn.query(sql, (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+  
+      console.log("customers: ", res);
+      result(null, res);
+    });
+  };
 module.exports = Compania;

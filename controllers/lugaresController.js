@@ -35,10 +35,8 @@ sliderPrincipal = (req, res) => {
           love: data[i].love,
           comentario: data[i].comentario,
           rating: data[i].rating,
-          primeraimagen: urlimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          //imagenes : data[i].imagenes,
-          //actividades : data[i].actividades,
+          primeraimagen:data[i].primeraimagen,
+          nombreclasificacion: data[i].nombreclasificacion, 
           principal: data[i].principal
         });
       }
@@ -118,10 +116,8 @@ sliderLugaresTops = (req, res) => {
           love: data[i].love,
           comentario: data[i].comentario,
           rating: data[i].rating,
-          primeraimagen: urlimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          //imagenes : data[i].imagenes,
-          //actividades : data[i].actividades,
+          primeraimagen: data[i].primeraimagen,
+          nombreclasificacion: data[i].nombreclasificacion, 
           principal: data[i].principal
         });
       }
@@ -194,10 +190,9 @@ buscarLugaresActivos = (req, res) => {
           resena: data[i].resena,
           love: data[i].love,
           comentario: data[i].comentario,
-          primeraimagen: urlimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          //imagenes : data[i].imagenes,
-          //actividades : data[i].actividades,
+          rating: data[i].rating,
+          primeraimagen: data[i].primeraimagen,
+          nombreclasificacion: data[i].nombreclasificacion, 
           principal: data[i].principal
         });
       }
@@ -309,10 +304,8 @@ obtenerLugaresDentroLugar = (req, res) => {
           resena: data[i].resena,
           love: data[i].love,
           comentario: data[i].comentario,
-          primeraimagen: urlimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          //imagenes : data[i].imagenes,
-          //actividades : data[i].actividades,
+          primeraimagen:  data[i].primeraimagen,
+          nombreclasificacion: data[i].nombreclasificacion, 
           principal: data[i].principal
         });
       }

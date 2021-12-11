@@ -76,8 +76,69 @@ showAllCompanies = (req, res) => {
       }
     })  
     };
+
+    mostrarCompaniasXClasificacion = (req, res) => {
+      if (!req.body) {
+        res.status(400).send({
+          success: false,
+          message: "Content can not be empty!"
+        });
+      }
+    
+      Compania.mostrarCompaniasXClasificacion(req.body.idclasificacion, (err, data) => {
+        if (err) {
+          res.status(500).send({
+            success: false,
+            message:
+              err.message || "Some error occurred while retrieving customers."
+          });
+        }
+        else {
+         
+          res.send({
+            success: true,
+            message: "Si encontro resultado",
+            data: data,
+          });
+        }
+      });
+    };
+    buscarCompania = async(req,res=response)=>{
+        if (!req.body) {
+          res.status(400).send({
+            success: false,
+            message: "Content can not be empty!"
+          });
+        }
+      Compania.buscarCompania(req.body.idclasificacion,req.body.valor, async (err, data)  => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              success: false,
+              message: `Not found Customer with id ${req.body.valor}.`
+            });
+           
+          } else {
+            res.status(500).send({
+              success: false,
+              message: "Error retrieving Customer with id " + req.body.valor
+            });
+          }
+        } 
+        else {
+           //EXISTE EL REGISTRO EN LA BASE DE DATOS 
+           
+          res.send({
+            success: true,
+            message: "Si encontro resultado", 
+            data:  data,
+          });
+        }
+      })  
+      };
 module.exports = {
     showAllCompanies,
     mostrarCompaniasXClasificacion,
-    detalleCompania
+    detalleCompania,
+    buscarCompania
   }

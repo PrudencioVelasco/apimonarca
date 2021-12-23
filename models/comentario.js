@@ -49,8 +49,32 @@ const ReporteComentarioTour = function (comentario) {
   this.eliminado  = comentario.eliminado; 
 };
 
+const ComentarioCompania = function(comentario){
+  this.idcomentario = comentario.idcomentario;
+  this.idcompania = comentario.idcompania; 
+  this.idconquienvisito = comentario.idconquienvisito;
+  this.rating = comentario.rating;
+  this.comentario = comentario.comentario;
+  this.fechavisito = comentario.fechavisito;
+  this.eliminado = comentario.eliminado;
+  this.fecharegistro = comentario.fecharegistro;
+  this.idusuario = comentario.idusuario; 
+};
+
 Comentario.insertarComentario = (newComentario, result) => {
   dbConn.query("INSERT INTO tblcomentario SET ?", newComentario, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created customer: ", { id: res.insertId });
+    result(null, { id: res.insertId, ...newComentario });
+  });
+};
+Comentario.insertarComentarioCompania = (newComentario, result) => {
+  dbConn.query("INSERT INTO tblcomentariocompania SET ?", newComentario, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -221,10 +245,66 @@ Comentario.obtenerComentariosTour= (
     result(null, res);
   });
 };
+Comentario.obtenerComentariosCompania= (
+  idcompania,
+  idcomentario,
+  limite,
+  result
+) => {
+  let sql =
+    "select " +
+    "u.uid, " +
+    "u.idusuario, " +
+    "u.userName, " +
+    "u.imageUrl, " +
+    "c.idcomentario , " +
+    "c.comentario , " +
+    "c.rating , " +
+    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
+    " from " +
+    " tblcomentariocompania c " +
+    " inner join tbluser u on " +
+    " u.idusuario = c.idusuario " +
+    "where c.idcompania  = ? and c.eliminado = 0 ";
+  if (idcomentario != "") {
+    sql += " and  c.idcomentario > "+idcomentario;
+  }
+  sql += " ORDER BY c.fechavisito DESC ";
+  if (limite != "") {
+    sql += " LIMIT "+limite;
+  }
+  
+  dbConn.query(sql, [idcompania], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+};
 Comentario.eliminarComentario = (idcomentario, result) => {
   //let email = usuario.email;
   //let password = usuario.password;
   let sql = "DELETE FROM tblcomentario WHERE idcomentario = ?";
+  dbConn.query(sql, [idcomentario], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+};
+Comentario.eliminarComentarioCompania = (idcomentario, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tblcomentariocompania SET eliminado = 1 WHERE idcomentario = ?";
   dbConn.query(sql, [idcomentario], (err, res) => {
     if (err) {
       console.log("error: ", err);

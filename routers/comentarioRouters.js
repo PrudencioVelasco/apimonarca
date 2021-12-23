@@ -13,5 +13,7 @@ module.exports = app => {
     app.post("/monarca/comentario/agregarReporteComentarioLugar",validarJWT, comentarioController.agregarReporteComentarioLugar);  
     app.post("/monarca/comentario/agregarReporteComentarioTour",validarJWT, comentarioController.agregarReporteComentarioTour);  
     app.post("/monarca/comentario/obtenerComentariosTour",comentarioController.obtenerComentariosTour);  
+    app.post("/monarca/comentario/obtenerComentariosCompania",comentarioController.obtenerComentariosCompania);  
+    app.post("/monarca/comentario/eliminarComentarioCompania",validarJWT, comentarioController.eliminarComentarioCompania);  
   
 }

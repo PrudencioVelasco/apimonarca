@@ -20,6 +20,8 @@ const causareporte = require('./routers/causaReporteRouters');
 const compania = require('./routers/companiaRouters');
 const tour = require('./routers/tourRouters');
 const telefono = require('./routers/telefonoRouter');
+const horario = require('./routers/horarioRouters');
+const imagencompania = require('./routers/imagenCompaniaRouters');
 
 app.use(express.static(__dirname + '/assets/lugares'));
 
@@ -55,7 +57,8 @@ causareporte(app);
 compania(app);
 tour(app);
 telefono(app);
-
+horario(app);
+imagencompania(app);
 
 module.exports ={
  app:app,

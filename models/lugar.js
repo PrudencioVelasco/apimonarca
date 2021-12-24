@@ -56,7 +56,7 @@ Lugar.obtenerLugaresDentroLugar = (idlugar,result)=>{
   });
 };
 Lugar.buscarLugaresActivos = (valor,result) => {
-  let sql = `select * from vwtodoslugaresactivo where concat(nombre,direccion,nombreclasificacion) like '%${valor}%' `;
+  let sql = `select * from vwtodoslugaresactivo where concat(LOWER(nombre),LOWER(direccion),LOWER(nombreclasificacion),LOWER(actividades)) like LOWER('%${valor}%') `;
   dbConn.query(sql, (err, res) => {
     if (err) {
       console.log("error: ", err);

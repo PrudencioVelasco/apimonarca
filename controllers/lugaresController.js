@@ -192,7 +192,8 @@ buscarLugaresActivos = (req, res) => {
           comentario: data[i].comentario,
           rating: data[i].rating,
           primeraimagen: data[i].primeraimagen,
-          nombreclasificacion: data[i].nombreclasificacion, 
+          nombreclasificacion: data[i].nombreclasificacion,
+          actividades: data[i].actividades, 
           principal: data[i].principal
         });
       }

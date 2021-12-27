@@ -81,6 +81,19 @@ Lugar.obtenerLugaresPorCategoria = (valor,result) => {
     result(null, res);
   });
 };
+Lugar.obtenerTodosLugares = (result) => {
+  let sql = "select * from vwtodoslugaresactivo";
+  dbConn.query(sql, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+};
 Lugar.sliderPrincipal = result => {
   dbConn.query("SELECT * FROM vwslider  WHERE idtiposlider = 1 ", (err, res) => {
     if (err) {

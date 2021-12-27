@@ -23,6 +23,7 @@ Horario.obtenerHorario = (idcompania,result)=>{
   };
   Horario.obtenerHorarioFiltrado = (idcompania,result)=>{
     var fecha = new Date();
+    fecha.toLocaleDateString("es-MX");
     var numero_dia = fecha.getDay();
     var hora_actual = fecha.getHours()+":"+fecha.getMinutes();
     console.log(hora_actual);

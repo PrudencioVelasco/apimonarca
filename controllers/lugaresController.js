@@ -129,6 +129,26 @@ sliderLugaresTops = (req, res) => {
   }
   });
 };
+
+obtenerTodosLugares = (req, res) => {
+  Lugar.obtenerTodosLugares((err, data) => {
+    if (err){
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+       
+      res.send({
+      success: true,
+      message: "Exito",
+      data: data
+    });
+  }
+  });
+};
 sliderRutasTops = (req, res) => {
   Ruta.sliderRutasTops((err, data) => {
     if (err){
@@ -427,7 +447,7 @@ obtenerDetalleLugar = (req, res) => {
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });
@@ -445,5 +465,6 @@ module.exports = {
   obtenerLugaresDentroLugar,
   obtenerLugaresPorCategoria,
   obtenerDetalleLugar,
-  buscarLugaresActivosIn
+  buscarLugaresActivosIn, 
+  obtenerTodosLugares
 }

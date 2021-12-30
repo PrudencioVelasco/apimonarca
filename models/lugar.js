@@ -94,6 +94,25 @@ Lugar.obtenerTodosLugares = (result) => {
     result(null, res);
   });
 };
+Lugar.obtenerTodosLugaresCercano = (latitud,longitud,result) => {
+  let sql = `select l.*, 111.111 *
+  DEGREES(ACOS(LEAST(1.0, COS(RADIANS(l.latitud))
+       * COS(RADIANS(${latitud}))
+       * COS(RADIANS(l.longitud - ${longitud}))
+       + SIN(RADIANS(l.latitud))
+       * SIN(RADIANS(${latitud}))))) AS distancia from vwtodoslugaresactivo l WHERE  l.latitud != 0 AND l.longitud != 0  HAVING distancia < 100.0   
+       ORDER BY distancia ASC`;
+  dbConn.query(sql, (err, res) => { 
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+};
 Lugar.sliderPrincipal = result => {
   dbConn.query("SELECT * FROM vwslider  WHERE idtiposlider = 1 ", (err, res) => {
     if (err) {

@@ -10,6 +10,7 @@ module.exports = app => {
     app.post("/monarca/lugar/obtenerDetalleLugar", lugaresController.obtenerDetalleLugar);
     app.post("/monarca/lugar/buscarLugaresActivosIn", lugaresController.buscarLugaresActivosIn);
     app.get("/monarca/lugar/obtenerTodosLugares", lugaresController.obtenerTodosLugares);
+    app.post("/monarca/lugar/obtenerTodosLugaresCercanos", lugaresController.obtenerTodosLugaresCercanos);
 
   
 }

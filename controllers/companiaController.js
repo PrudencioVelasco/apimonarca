@@ -43,6 +43,32 @@ showAllCompanies = (req, res) => {
       }
     });
   };
+  mostrarCompaniasCercano = (req, res) => {
+    if (!req.body) {
+      res.status(400).send({
+        success: false,
+        message: "Content can not be empty!"
+      });
+    }
+  
+    Compania.mostrarCompaniasCercano(req.body.idclasificacion,req.body.latitud,req.body.longitud, (err, data) => {
+      if (err) {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while retrieving customers."
+        });
+      }
+      else {
+       
+        res.send({
+          success: true,
+          message: "Si encontro resultado",
+          data: data,
+        });
+      }
+    });
+  };
     detalleCompania = async(req,res=response)=>{
       if (!req.body) {
         res.status(400).send({
@@ -140,5 +166,6 @@ module.exports = {
     showAllCompanies,
     mostrarCompaniasXClasificacion,
     detalleCompania,
-    buscarCompania
+    buscarCompania,
+    mostrarCompaniasCercano
   }

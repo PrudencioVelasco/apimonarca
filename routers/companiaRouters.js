@@ -4,5 +4,6 @@ module.exports = app => {
     app.post("/monarca/compania/mostrarCompaniasXClasificacion", companiaController.mostrarCompaniasXClasificacion); 
     app.post("/monarca/compania/detallecompania", companiaController.detalleCompania); 
     app.post("/monarca/compania/buscarCompania", companiaController.buscarCompania); 
+    app.post("/monarca/compania/mostrarCompaniasCercano", companiaController.mostrarCompaniasCercano); 
 
 }

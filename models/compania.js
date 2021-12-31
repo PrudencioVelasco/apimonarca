@@ -41,6 +41,25 @@ Compania.mostrarCompaniasXClasificacion  = (idclasificacion ,result)=>{
       result(null, res);
     });
   };
+  Compania.mostrarCompaniasCercano  = (idclasificacion, latitud, longitud ,result)=>{
+    let sql = `SELECT c.*,111.111 *
+    DEGREES(ACOS(LEAST(1.0, COS(RADIANS(c.latitud))
+         * COS(RADIANS(${latitud}))
+         * COS(RADIANS(c.longitud - ${longitud}))
+         + SIN(RADIANS(c.latitud))
+         * SIN(RADIANS(${latitud}))))) AS distancia FROM vwcompania c WHERE c.idclasificacion  = ${idclasificacion} AND  c.latitud != 0 AND c.longitud != 0  HAVING distancia < 100.0`;
+    dbConn.query(sql, (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      console.log("customers: ", res);
+      result(null, res);
+    });
+  };
+  
   Compania.detalleCompania = (idcompania,result)=>{ 
     let sql = "SELECT * FROM vwcompania WHERE idcompania = ?";
     dbConn.query(sql,[idcompania], (err, res) => {

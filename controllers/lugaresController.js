@@ -43,7 +43,7 @@ sliderPrincipal = (req, res) => {
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });
@@ -124,7 +124,7 @@ sliderLugaresTops = (req, res) => {
       res.send({
       success: true,
       message: "Exito",
-      data: jsonArr
+      data: data
     });
   }
   });
@@ -304,7 +304,7 @@ buscarLugaresActivosIn = (req, res) => {
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });

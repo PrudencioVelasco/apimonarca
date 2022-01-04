@@ -4,7 +4,9 @@ const http = require('http');
 const server = http.createServer(app);
 const logger = require('morgan');
 const cors = require('cors');
+const multer = require('multer');
 require('dotenv').config()
+const fileUpload = require('express-fileupload');
 const user = require('./routers/usersRouters');
 const lugar = require('./routers/lugarRouters');
 const categoria = require('./routers/categoriaRouters');
@@ -24,7 +26,7 @@ const horario = require('./routers/horarioRouters');
 const imagencompania = require('./routers/imagenCompaniaRouters');
 
 app.use(express.static(__dirname + '/assets/lugares'));
-
+app.use(fileUpload());
 const port = process.env.PORT || 3000;
 
 app.use(logger('dev'));

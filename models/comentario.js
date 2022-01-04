@@ -97,8 +97,19 @@ Comentario.insertarComentarioLugar = (newComentario, result) => {
     result(null, { id: res.insertId, ...newComentario });
   });
 };
-Comentario.insertarReporteComentarioLugar = (newReporteComentario, result) => {
+Comentario.insertarComentarioTour = (newComentario, result) => {
+  dbConn.query("INSERT INTO tblcomentariotour SET ?", newComentario, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
 
+    console.log("created customer: ", { id: res.insertId });
+    result(null, { id: res.insertId, ...newComentario });
+  });
+};
+Comentario.insertarReporteComentarioLugar = (newReporteComentario, result) => {
   dbConn.query("INSERT INTO tblreportecomentariolugar SET ?", newReporteComentario, (err, res) => {
     if (err) {
       console.log("error: ", err);
@@ -165,7 +176,7 @@ Comentario.obtenerComentariosPorLugar = (
     result(null, res);
   });
 };
-Comentario.obtenerComentariosLugarv2 = (
+Comentario.obtenerComentariosLugar = (
   idlugar,
   idcomentario,
   limite,
@@ -318,6 +329,38 @@ Comentario.eliminarComentarioCompania = (idcomentario, result) => {
   });
 };
 Comentario.eliminarComentariov2 = (idcomentario, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tblcomentariolugar SET eliminado = 1 WHERE idcomentario = ?";
+  dbConn.query(sql, [idcomentario], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+};
+Comentario.eliminarComentarioTour = (idcomentario, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tblcomentariotour SET eliminado = 1 WHERE idcomentario = ?";
+  dbConn.query(sql, [idcomentario], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+};
+Comentario.eliminarComentarioLugar = (idcomentario, result) => {
   //let email = usuario.email;
   //let password = usuario.password;
   let sql = "UPDATE tblcomentariolugar SET eliminado = 1 WHERE idcomentario = ?";

@@ -183,19 +183,11 @@ Comentario.obtenerComentariosLugar = (
   result
 ) => {
   let sql =
-    "select " +
-    "u.uid, " +
-    "u.idusuario, " +
-    "u.userName, " +
-    "u.imageUrl, " +
-    "c.idcomentario , " +
-    "c.comentario , " +
-    "c.rating , " +
-    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
+    "select u.uid, u.idusuario,  u.userName,  u.imageUrl,  c.idcomentario , c.comentario , c.rating , " +
+    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha, " +
+    "(  SELECT  CAST( CONCAT(  '[', GROUP_CONCAT(  JSON_OBJECT( 'idimagencomentariolugar',  img.idimagencomentariolugar,  'nombreimagen', img.nombreimagen, 'imagenurl', img.imagenurl  ) SEPARATOR ','  ), ']' ) AS JSON  ) AS bk FROM tblimagen_comentario_lugar img  WHERE  (img.idcomentariolugar = c.idcomentario)) AS imagenes"+
     " from " +
-    " tblcomentariolugar c " +
-    " inner join tbluser u on " +
-    " u.idusuario = c.idusuario " +
+    " tblcomentariolugar c inner join tbluser u on   u.idusuario = c.idusuario " +
     "where c.idlugar  = ? and c.eliminado = 0 ";
   if (idcomentario != "") {
     sql += " and  c.idcomentario > "+idcomentario;

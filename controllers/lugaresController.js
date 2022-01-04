@@ -215,39 +215,11 @@ buscarLugaresActivos = (req, res) => {
         error: err.message
       });
     }
-    else {
-      var jsonArr = [];
-      for (var i = 0; i < data.length; i++) {
-
-       // let urlimagen = 'http://10.0.2.2:3000/' + data[i].primeraimagen;
-
-       // let urlimagen =  process.env.CONF_URL+ data[i].primeraimagen;
-        let urlimagen  ="";
-        if(data[i].primeraimagen != null  ){
-            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        }
-        jsonArr.push({
-          idlugar: data[i].idlugar,
-          nombre: data[i].nombre,
-          direccion: data[i].direccion,
-          latitud: data[i].latitud,
-          longitud: data[i].longitud,
-          descripcion: data[i].descripcion,
-          historia: data[i].historia,
-          resena: data[i].resena,
-          love: data[i].love,
-          comentario: data[i].comentario,
-          rating: data[i].rating,
-          primeraimagen: data[i].primeraimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          actividades: data[i].actividades, 
-          principal: data[i].principal
-        });
-      }
+    else { 
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });
@@ -273,34 +245,7 @@ buscarLugaresActivosIn = (req, res) => {
         error: err.message
       });
     }
-    else {
-      var jsonArr = [];
-      for (var i = 0; i < data.length; i++) {
-
-       // let urlimagen = 'http://10.0.2.2:3000/' + data[i].primeraimagen;
-
-       // let urlimagen =  process.env.CONF_URL+ data[i].primeraimagen;
-        let urlimagen  ="";
-        if(data[i].primeraimagen != null  ){
-            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        }
-        jsonArr.push({
-          idlugar: data[i].idlugar,
-          nombre: data[i].nombre,
-          direccion: data[i].direccion,
-          latitud: data[i].latitud,
-          longitud: data[i].longitud,
-          descripcion: data[i].descripcion,
-          historia: data[i].historia,
-          resena: data[i].resena,
-          love: data[i].love,
-          comentario: data[i].comentario,
-          rating: data[i].rating,
-          primeraimagen: data[i].primeraimagen,
-          nombreclasificacion: data[i].nombreclasificacion, 
-          principal: data[i].principal
-        });
-      }
+    else { 
       res.send({
         success: true,
         message: "Si encontro resultado",

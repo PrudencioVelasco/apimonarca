@@ -190,9 +190,9 @@ Comentario.obtenerComentariosLugar = (
     " tblcomentariolugar c inner join tbluser u on   u.idusuario = c.idusuario " +
     "where c.idlugar  = ? and c.eliminado = 0 ";
   if (idcomentario != "") {
-    sql += " and  c.idcomentario > "+idcomentario;
+    sql += " and  c.idcomentario < "+idcomentario;
   }
-  sql += " ORDER BY c.fechavisito DESC ";
+  sql += " ORDER BY c.idcomentario DESC ";
   if (limite != "") {
     sql += " LIMIT "+limite;
   }
@@ -215,24 +215,17 @@ Comentario.obtenerComentariosTour= (
   result
 ) => {
   let sql =
-    "select " +
-    "u.uid, " +
-    "u.idusuario, " +
-    "u.userName, " +
-    "u.imageUrl, " +
-    "c.idcomentario , " +
-    "c.comentario , " +
-    "c.rating , " +
-    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
+    "select u.uid,  u.idusuario,  u.userName, u.imageUrl, c.idcomentario , c.comentario ,  c.rating , DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha, " +
+    "(  SELECT  CAST( CONCAT(  '[', GROUP_CONCAT(  JSON_OBJECT( 'idimagencomentariotour',  img.idimagencomentariotour,  'nombreimagen', img.nombreimagen, 'imagenurl', img.imagenurl  ) SEPARATOR ','  ), ']' ) AS JSON  ) AS bk FROM tblimagen_comentario_tour img  WHERE  (img.idcomentariotour = c.idcomentario)) AS imagenes"+
     " from " +
     " tblcomentariotour c " +
     " inner join tbluser u on " +
     " u.idusuario = c.idusuario " +
     "where c.idtour  = ? and c.eliminado = 0 ";
   if (idcomentario != "") {
-    sql += " and  c.idcomentario > "+idcomentario;
+    sql += " and  c.idcomentario < "+idcomentario;
   }
-  sql += " ORDER BY c.fechavisito DESC ";
+  sql += " ORDER BY c.idcomentario DESC ";
   if (limite != "") {
     sql += " LIMIT "+limite;
   }
@@ -255,24 +248,17 @@ Comentario.obtenerComentariosCompania= (
   result
 ) => {
   let sql =
-    "select " +
-    "u.uid, " +
-    "u.idusuario, " +
-    "u.userName, " +
-    "u.imageUrl, " +
-    "c.idcomentario , " +
-    "c.comentario , " +
-    "c.rating , " +
-    "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha " +
+    "select  u.uid, u.idusuario, u.userName, u.imageUrl,  c.idcomentario ,  c.comentario , c.rating ,  DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha, " +
+    "(  SELECT  CAST( CONCAT(  '[', GROUP_CONCAT(  JSON_OBJECT( 'idimagencomentariocompania',  img.idimagencomentariocompania,  'nombreimagen', img.nombreimagen, 'imagenurl', img.imagenurl  ) SEPARATOR ','  ), ']' ) AS JSON  ) AS bk FROM tblimagen_comentario_compania img  WHERE  (img.idcomentariocompania = c.idcomentario)) AS imagenes"+
     " from " +
     " tblcomentariocompania c " +
     " inner join tbluser u on " +
     " u.idusuario = c.idusuario " +
     "where c.idcompania  = ? and c.eliminado = 0 ";
   if (idcomentario != "") {
-    sql += " and  c.idcomentario > "+idcomentario;
+    sql += " and  c.idcomentario < "+idcomentario;
   }
-  sql += " ORDER BY c.fechavisito DESC ";
+  sql += " ORDER BY c.idcomentario DESC ";
   if (limite != "") {
     sql += " LIMIT "+limite;
   }

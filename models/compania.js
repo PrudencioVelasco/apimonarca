@@ -80,7 +80,7 @@ Compania.mostrarCompaniasXClasificacion  = (idclasificacion ,result)=>{
     });
   };
   Compania.buscarCompania = (idclasificacion,valor,result) => {
-    let sql = `select * from vwcompania where idclasificacion = '${idclasificacion}' and concat(nombre,direccion,actividad) like '%${valor}%' `;
+    let sql = `select * from vwcompania where idclasificacion = '${idclasificacion}' and concat(LOWER(nombre),LOWER(direccion),LOWER(actividad)) like LOWER('%${valor}%') `;
     dbConn.query(sql, (err, res) => {
       if (err) {
         console.log("error: ", err);

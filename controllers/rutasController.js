@@ -7,10 +7,10 @@ require('dotenv').config()
 const port = process.env.PORT || 3001;
 
  
-todasRutas = (req, res) => {
+todasRutasVisibles = (req, res) => {
   // Validate request
  
-  Ruta.todasRutas ((err, data) => {
+  Ruta.todasRutasVisibles ((err, data) => {
     if (err) {
       res.status(500).send({
         success: false,
@@ -40,7 +40,7 @@ todasRutas = (req, res) => {
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });
@@ -91,12 +91,12 @@ obtenerLugaresRuta = (req, res) => {
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr,
+        data: data,
       });
     }
   });
 };
 module.exports = {
-    todasRutas,
+  todasRutasVisibles,
     obtenerLugaresRuta
 }

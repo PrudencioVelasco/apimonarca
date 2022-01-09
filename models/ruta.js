@@ -6,8 +6,8 @@ const Ruta = function (ruta) {
     this.imagen = ruta.imagen;
     this.descripcion = ruta.descripcion; 
 };
-Ruta.todasRutas = result => {
-    dbConn.query("SELECT * FROM tblruta ", (err, res) => {
+Ruta.todasRutasVisibles = result => {
+    dbConn.query("SELECT * FROM tblruta WHERE visible = 1", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(null, err);

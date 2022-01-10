@@ -45,6 +45,27 @@ todasRutasVisibles = (req, res) => {
     }
   });
 };
+todasRutasPrincipales = (req, res) => {
+  // Validate request
+ 
+  Ruta.todasRutasPrincipales ((err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else { 
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
 obtenerLugaresRuta = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -98,5 +119,6 @@ obtenerLugaresRuta = (req, res) => {
 };
 module.exports = {
   todasRutasVisibles,
-    obtenerLugaresRuta
+    obtenerLugaresRuta,
+    todasRutasPrincipales
 }

@@ -17,6 +17,17 @@ Ruta.todasRutasVisibles = result => {
         result(null, res);
     });
 };
+Ruta.todasRutasPrincipales = result => {
+  dbConn.query("SELECT * FROM tblruta WHERE principal = 1", (err, res) => {
+      if (err) {
+          console.log("error: ", err);
+          result(null, err);
+          return;
+      } 
+      console.log("customers: ", res);
+      result(null, res);
+  });
+};
 Ruta.obtenerLugaresRuta = (idruta,result)=>{
     let sql = "SELECT * FROM vwslugaresruta WHERE idruta = ?";
     dbConn.query(sql, [idruta], (err, res) => {

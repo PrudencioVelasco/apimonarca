@@ -29,7 +29,7 @@ Ruta.todasRutasPrincipales = result => {
   });
 };
 Ruta.obtenerLugaresRuta = (idruta,result)=>{
-    let sql = "SELECT * FROM vwslugaresruta WHERE idruta = ?";
+    let sql = "SELECT * FROM vwslugaresruta WHERE idruta = ? ORDER BY numero ASC";
     dbConn.query(sql, [idruta], (err, res) => {
       if (err) {
         console.log("error: ", err);

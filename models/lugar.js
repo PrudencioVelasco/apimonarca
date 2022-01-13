@@ -17,6 +17,56 @@ const Lugar = function (lugar) {
   this.create_at = lugar.create_at;
   this.update_at = lugar.update_at;
 };
+Lugar.obtenerLugares = (page_send, result) => {
+  const limit =20;
+  const page = page_send;
+  const offset = (page-1)* limit;
+  const query = "select * from tbllugar limit "+limit+" offset "+offset;
+ dbConn.query(query, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+  /*var numRows;
+  var queryPagination;
+  var numPerPage = parseInt(npp, 10) || 1;
+  var page = parseInt(page, 10) || 0;
+  var numPages;
+  var skip = page * numPerPage;
+  var limit = skip + ',' + numPerPage;
+  queryAsync("SELECT count(*) as numRows FROM tbllugar").then(
+    function (result) {
+      numRows = result[0].numRows;
+      numPages = Math.ceil(numRows / numPages);
+    }
+  ).then(
+    () => queryAsync('SELECT * FROM tbllugar ORDER BY ID DESC LIMIT' + limit)
+  ).then(
+    function (results) {
+      var responsePayload = {
+        results: results
+      };
+      if (page < numPages) {
+        responsePayload.pagination = {
+          current: page,
+          perPage: numPerPage,
+          previous: page > 0 ? page - 1 : undefined,
+          next: page < numPages - 1 ? page + 1 : undefined
+        }
+      }else responsePayload.pagination={
+err:'required page '+page+' is >= to maximun page number '+ numPages
+      }
+      result(null, responsePayload);
+    }
+  ).catch(function(err){
+    
+  })*/
+};
 Lugar.todoLosLugaresActivos = result => {
   dbConn.query("SELECT * FROM vwTodoslugaresActivo", (err, res) => {
     if (err) {

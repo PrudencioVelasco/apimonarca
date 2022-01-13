@@ -48,6 +48,34 @@ sliderPrincipal = (req, res) => {
     }
   });
 };
+obtenerLugares = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  Lugar.obtenerLugares(req.body.page, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+      const total = data.length;
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        total_por_pagina:total,
+        numero_pagina:req.body.page,
+        data: data,
+      });
+    }
+  });
+};
 obtenerImagenesLugar = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -439,5 +467,6 @@ module.exports = {
   obtenerDetalleLugar,
   buscarLugaresActivosIn, 
   obtenerTodosLugares,
-  obtenerTodosLugaresCercanos
+  obtenerTodosLugaresCercanos,
+  obtenerLugares
 }

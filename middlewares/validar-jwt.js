@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const validarJWT =(req,res,next)=>{
 const token = req.header('x-token');
+console.log(token);
 if(!token || token ==''){
     res.status(401).send({
         success: false,
@@ -16,7 +17,7 @@ try {
 } catch (error) {
     res.status(401).send({
         success: false,
-        message: "Token no valido.",
+        message: "Error", 
       });
 }
 }

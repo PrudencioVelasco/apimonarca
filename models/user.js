@@ -20,6 +20,24 @@ const RolUsuario = function (usuario) {
 
 };
 
+User.obtenerDatosUsuarioAplicacion = (idusuario,result)=>{ 
+  let sql = "SELECT * FROM tbluser u  WHERE  u.idusuario = ?";
+  dbConn.query(sql,[idusuario,idusuario], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("found customer: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+  // not found Customer with the id
+  result({ kind: "not_found" }, null);
+});
+};
 User.obtenerDatosUsuario = (idusuario,result)=>{ 
   let sql = "SELECT u.idusuario, u.userName, u.userEmail,u.imageUrl,u.uid,u.password,u.desde, r.idrol, r.nombrerol FROM tbluser u INNER JOIN tbluser_rol ur ON u.idusuario = ur.idusuario INNER JOIN tblrol r ON r.idrol = ur.idrol WHERE u.idusuario = ?";
   dbConn.query(sql,[idusuario], (err, res) => {

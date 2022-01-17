@@ -149,8 +149,8 @@ const keys = require('../config/key');
 
 const renewToken = async (req, res = response) => {
   const uid = req.uid;
-  const token = await generarJWT(uid);
-  User.obtenerDatosUsuario(uid, async (err, data) => {
+  const token = await generarJWT(uid); 
+  User.obtenerDatosUsuarioAplicacion(uid, async (err, data) => {
     if (err) {
       if (err.kind === "not_found") {
         res.status(404).send({

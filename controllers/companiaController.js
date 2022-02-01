@@ -1,171 +1,196 @@
 const Compania = require('../models/compania');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
-const keys = require('../config/key'); 
+const keys = require('../config/key');
 showAllCompanies = (req, res) => {
-    Compania.showAllCompanies((err, data) => {
-      if (err)
-        res.status(500).send({
-          success: false,
-          message:
-            err.message || "Some error occurred while retrieving customers."
-        });
-      else res.send({
-        success: true,
-        message: "Exito",
-        data: data
-      });
-    });
-  };
-  mostrarCompaniasXClasificacion = (req, res) => {
-    if (!req.body) {
-      res.status(400).send({
+  Compania.showAllCompanies((err, data) => {
+    if (err)
+      res.status(500).send({
         success: false,
-        message: "Content can not be empty!"
+        message:
+          err.message || "Some error occurred while retrieving customers."
       });
-    }
-  
-    Compania.mostrarCompaniasXClasificacion(req.body.idclasificacion, (err, data) => {
-      if (err) {
-        res.status(500).send({
-          success: false,
-          message:
-            err.message || "Some error occurred while retrieving customers."
-        });
-      }
-      else {
-       
-        res.send({
-          success: true,
-          message: "Si encontro resultado",
-          data: data,
-        });
-      }
+    else res.send({
+      success: true,
+      message: "Exito",
+      data: data
     });
-  };
-  mostrarCompaniasCercano = (req, res) => {
-    if (!req.body) {
-      res.status(400).send({
-        success: false,
-        message: "Content can not be empty!"
-      });
-    }
-  
-    Compania.mostrarCompaniasCercano(req.body.idclasificacion,req.body.latitud,req.body.longitud, (err, data) => {
-      if (err) {
-        res.status(500).send({
-          success: false,
-          message:
-            err.message || "Some error occurred while retrieving customers."
-        });
-      }
-      else {
-       
-        res.send({
-          success: true,
-          message: "Si encontro resultado",
-          data: data,
-        });
-      }
+  });
+}
+mostrarCompaniasXClasificacion = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
     });
-  };
-    detalleCompania = async(req,res=response)=>{
-      if (!req.body) {
-        res.status(400).send({
-          success: false,
-          message: "Content can not be empty!"
-        });
-      }
-    Compania.detalleCompania(req.body.idcompania, async (err, data)  => {
-      if (err) {
-        if (err.kind === "not_found") {
-          res.status(404).send({
-            success: false,
-            message: `Not found Customer with id ${req.body.idcompania}.`
-          });
-         
-        } else {
-          res.status(500).send({
-            success: false,
-            message: "Error retrieving Customer with id " + req.body.idcompania
-          });
-        }
-      } 
-      else {
-         //EXISTE EL REGISTRO EN LA BASE DE DATOS 
-         
-        res.send({
-          success: true,
-          message: "Si encontro resultado", 
-          data:  data,
-        });
-      }
-    })  
-    };
-
-    mostrarCompaniasXClasificacion = (req, res) => {
-      if (!req.body) {
-        res.status(400).send({
-          success: false,
-          message: "Content can not be empty!"
-        });
-      }
-    
-      Compania.mostrarCompaniasXClasificacion(req.body.idclasificacion, (err, data) => {
-        if (err) {
-          res.status(500).send({
-            success: false,
-            message:
-              err.message || "Some error occurred while retrieving customers."
-          });
-        }
-        else {
-         
-          res.send({
-            success: true,
-            message: "Si encontro resultado",
-            data: data,
-          });
-        }
-      });
-    };
-    buscarCompania = async(req,res=response)=>{
-        if (!req.body) {
-          res.status(400).send({
-            success: false,
-            message: "Content can not be empty!"
-          });
-        }
-      Compania.buscarCompania(req.body.idclasificacion,req.body.valor, async (err, data)  => {
-        if (err) {
-          if (err.kind === "not_found") {
-            res.status(404).send({
-              success: false,
-              message: `Not found Customer with id ${req.body.valor}.`
-            });
-           
-          } else {
-            res.status(500).send({
-              success: false,
-              message: "Error retrieving Customer with id " + req.body.valor
-            });
-          }
-        } 
-        else {
-           //EXISTE EL REGISTRO EN LA BASE DE DATOS 
-           
-          res.send({
-            success: true,
-            message: "Si encontro resultado", 
-            data:  data,
-          });
-        }
-      })  
-      };
-module.exports = {
-    showAllCompanies,
-    mostrarCompaniasXClasificacion,
-    detalleCompania,
-    buscarCompania,
-    mostrarCompaniasCercano
   }
+
+  Compania.mostrarCompaniasXClasificacion(req.body.idclasificacion, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
+mostrarCompaniasCercano = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  Compania.mostrarCompaniasCercano(req.body.idclasificacion, req.body.latitud, req.body.longitud, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
+detalleCompania = async (req, res = response) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  Compania.detalleCompania(req.body.idcompania, async (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          success: false,
+          message: `Not found Customer with id ${req.body.idcompania}.`
+        });
+
+      } else {
+        res.status(500).send({
+          success: false,
+          message: "Error retrieving Customer with id " + req.body.idcompania
+        });
+      }
+    }
+    else {
+      //EXISTE EL REGISTRO EN LA BASE DE DATOS 
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  })
+}
+mostrarCompaniasXClasificacion = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  Compania.mostrarCompaniasXClasificacion(req.body.idclasificacion, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
+buscarCompania = async (req, res = response) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  Compania.buscarCompania(req.body.idclasificacion, req.body.valor, async (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          success: false,
+          message: `Not found Customer with id ${req.body.valor}.`
+        });
+
+      } else {
+        res.status(500).send({
+          success: false,
+          message: "Error retrieving Customer with id " + req.body.valor
+        });
+      }
+    }
+    else {
+      //EXISTE EL REGISTRO EN LA BASE DE DATOS 
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  })
+}
+companiasPorUsuario = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  let idusuario = req.uid;
+  Compania.companiasPorUsuario(idusuario, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
+module.exports = {
+  showAllCompanies,
+  mostrarCompaniasXClasificacion,
+  detalleCompania,
+  buscarCompania,
+  mostrarCompaniasCercano,
+  companiasPorUsuario
+}

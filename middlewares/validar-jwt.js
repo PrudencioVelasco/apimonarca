@@ -17,7 +17,7 @@ try {
 } catch (error) {
     res.status(401).send({
         success: false,
-        message: "Error", 
+        message: error, 
       });
 }
 }

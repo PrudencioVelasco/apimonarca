@@ -137,6 +137,52 @@ User.updateUsuario = (uid,nombre,imagen, result) => {
     return;
   });
 }
+User.updateNombreUsuario = (nombre,uid, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tbluser SET userName = ? WHERE idusuario = ?";
+  dbConn.query(sql, [nombre,uid], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+}
+User.updateFotoUsuario = (uid,url, result) => {
+  //let email = usuario.email;
+  //let password = usuario.password;
+  let sql = "UPDATE tbluser SET imageUrl = ? WHERE idusuario = ?";
+  dbConn.query(sql, [url,uid], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+}
+User.updatePasswordUsuario = (uid,password, result) => { 
+  let sql = "UPDATE tbluser SET password = ? WHERE idusuario = ?";
+  dbConn.query(sql, [password,uid], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("found customer: ", res[0]);
+    result(null, true);
+    return;
+  });
+}
 User.validarCorreo = (email,desde,result)=>{ 
   let sql = "SELECT * FROM tbluser WHERE userEmail = ? AND desde = ? ";
   dbConn.query(sql,[email, desde], (err, res) => {

@@ -1,144 +1,3 @@
-/*const User = require('../models/user');
-const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken');
-const keys = require('../config/key');
-const RolUsuario = require('../models/rolusuario')
-findAll = (req, res) => {
-  User.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        success: false,
-        message:
-          err.message || "Some error occurred while retrieving customers."
-      });
-    else res.send({
-      success: true,
-      message: "Exito",
-      data: data
-    });
-  });
-};
-// Create and Save a new Customer
-create = (req, res) => {
-  // Validate request
-  if (!req.body) {
-    res.status(400).send({
-      success: false,
-      message: "Content can not be empty!"
-    });
-  }
-
-  const encriptado = bcrypt.hashSync(req.body.password, 10);
-  // Create a Customer
-  const usuario = new User({
-    email: req.body.email,
-    name: req.body.name,
-    lastname: req.body.lastname,
-    phone: req.body.phone,
-    password: encriptado,
-    create_at: new Date(),
-    update_at: new Date()
-  });
-
-  // Save Customer in the database
-  User.create(usuario, (err, data) => {
-    if (err) {
-      res.status(500).send({
-        success: false,
-        message:
-          err.message || "Some error occurred while creating the Customer.",
-        error: err.message
-      });
-    }
-    else {
-      const usuario_rol = new RolUsuario({
-        id_user: data.id,
-        id_rol: 1,
-        create_at: new Date(),
-        update_at: new Date()
-      }
-      );
-      RolUsuario.create(usuario_rol, (err, data) => {
-        if (err) {
-          res.status(500).send({
-            success: false,
-            message:
-              err.message || "Ocurrio un error al asignarle el rol.",
-            error: err.message
-          });
-        } else {
-          res.send({
-            success: true,
-            message: "Registrado con exito!",
-            data: data.id,
-          });
-        }
-      });
-      
-    }
-  });
-};
-login = (req, res) => {
-  if (!req.body) {
-    res.status(400).send({
-      success: false,
-      message: "Content can not be empty!"
-    });
-  }
-  
-  User.login(req.body.email, (err, data) => {
-    console.log(req.body.email);
-    if (err) {
-      if (err.kind === "not_found") {
-        res.status(404).send({
-          success: false,
-          message: `Not found Customer with id ${req.body.email}.`
-        });
-      } else {
-        res.status(500).send({
-          success: false,
-          message: "Error retrieving Customer with id " + req.params.customerId
-        });
-      }
-    } else {
-      let passwordEncriptado = data.password;
-      // check account found and verify password
-      if (!passwordEncriptado || !bcrypt.compareSync(req.body.password, passwordEncriptado)) {
-        // authentication failed
-        res.send({
-          success: false,
-          message: "El usuario o contrasena son incorrectos.",
-        });
-      } else {
-        const tokengenerado = jwt.sign({ id: data.id, email: data.email }, keys.secretOrKey, {
-          // expiresIn: (60*60*24) // 1 HORA
-        });
-        // authentication successful  
-        const datausuario = {
-          id: data.id,
-          name: data.name,
-          lastname: data.lastname,
-          email: data.email,
-          phone: data.phone,
-          image: data.image,
-          session_token: `JWT ${tokengenerado}`
-        }
-        res.send({
-          success: true,
-          message: "Exito",
-          data: datausuario
-        });
-      }
-
-    }
-  });
-};
-
-module.exports = {
-  findAll,
-  create,
-  login
-}*/
 const https = require('https');
 const FB = require('fb');
 const { generarJWT } = require("../helpers/jwt");
@@ -146,7 +5,8 @@ const { User, RolUsuario } = require('../models/user');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key');
-
+const aws = require('aws-sdk/clients/s3');
+const path = require('path');
 const renewToken = async (req, res = response) => {
   const uid = req.uid;
   const token = await generarJWT(uid); 
@@ -380,10 +240,7 @@ crearUsuarioCliente = (req, res) => {
                       data: datau,
                     });
                   }
-                })
-
-             
-               
+                }) 
                  
               }
             });
@@ -409,9 +266,7 @@ crearUsuarioCliente = (req, res) => {
 
   })
 
-};
-
-
+}
 loginUsuarioCliente = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -456,11 +311,163 @@ loginUsuarioCliente = (req, res) => {
 
     }
   });
-};
+}
+modificarNombreUsario=(req,res)=>{
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  } 
+  User.updateNombreUsuario(req.body.nombre,req.uid, (err, datarol) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Ocurrio un error al asignarle el rol.",
+        error: err.message
+      });
+    } else { 
+      User.obtenerDatosUsuario(req.uid, async (err, datau) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              success: false,
+              message: `Not found Customer with id ${req.uid}.`
+            });
+    
+          } else {
+            res.status(500).send({
+              success: false,
+              message: "Error retrieving Customer with id " + req.uid
+            });
+          }
+        }
+        else { 
+          const token = await generarJWT(req.uid);
+          res.send({
+            success: true,
+            message: "Si encontro resultado",
+            token: token,
+            data: datau,
+          });
+        }
+      }) 
+    }
+  });
+}
+subirFotoPerfil = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  var errores = 0;
+  var exitos = 0; 
+  const uploads = Object.values(req.files.fotos);
+  uploads.forEach(async (upload) => {
+    const fileName = `perfil_${req.uid}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(upload.name).ext}`;
+    const fileType = upload.mimetype;
+    const bucketName = process.env.AWS_BUCKET_NAME;
+    const region = process.env.AWS_BUCKET_REGION;
+    const accessKeyId = process.env.AWS_ACCESS_KEY;
+    const secretAccessKey = process.env.AWS_SECRET_KEY;
+    const s3 = new aws({
+      region,
+      accessKeyId,
+      secretAccessKey,
+    });
+    const uploadParams = {
+      Bucket: bucketName,
+      Body: upload.data,
+      Key: fileName,
+      ContentType: fileType,
+    };
+    var s3upload = s3.upload(uploadParams).promise();
+    s3upload
+      .then(function (data) {
+        const url =  `https://${bucketName}.s3.amazonaws.com/${fileName}`; 
+        User.updateFotoUsuario(req.uid,url, (err, data) => {
+          if (err) {
+            errores += 1;
+          }
+          else {
+            exitos += 1;
+          }
+        });
+      })
+      .catch(function (err) {
+        errores += 1;
+      });
+  });
+  if (errores == 0) {
+    res.send({
+      success: true,
+      message: "Se subieron las fotos con exito.",
+      data: "",
+    });
+  } else {
 
+    res.send({
+      success: true,
+      message: "Algunas fotos no fueron subidas!",
+      data: "",
+    });
+  }
+}
+cambiarPasswordUsuario=(req,res)=>{
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  } 
+  const encriptado = bcrypt.hashSync(req.body.password, 10);
+  User.updateNombreUsuario(req.uid,encriptado, (err, datarol) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Ocurrio un error al asignarle el rol.",
+        error: err.message
+      });
+    } else { 
+      User.obtenerDatosUsuario(req.uid, async (err, datau) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            res.status(404).send({
+              success: false,
+              message: `Not found Customer with id ${req.uid}.`
+            });
+    
+          } else {
+            res.status(500).send({
+              success: false,
+              message: "Error retrieving Customer with id " + req.uid
+            });
+          }
+        }
+        else { 
+          const token = await generarJWT(req.uid);
+          res.send({
+            success: true,
+            message: "Si encontro resultado",
+            token: token,
+            data: datau,
+          });
+        }
+      }) 
+    }
+  });
+}
 module.exports = {
   renewToken,
   singInFacebook,
   crearUsuarioCliente,
-  loginUsuarioCliente
+  loginUsuarioCliente,
+  cambiarPasswordUsuario,
+  subirFotoPerfil,
+  modificarNombreUsario
 }

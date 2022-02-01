@@ -1,9 +1,8 @@
-const User = require('../models/user');
-const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken');
-const keys = require('../config/key');
-const Lugar = require('../models/lugar');
+const User = require('../models/user'); 
+const {Lugar,ImagenLugar,ClasificacionLugar} = require('../models/lugar');
 const Ruta = require('../models/ruta'); 
+const aws = require('aws-sdk/clients/s3');
+const path = require('path');
 require('dotenv').config() 
 sliderPrincipal = (req, res) => {
   Lugar.sliderPrincipal((err, data) => {
@@ -14,32 +13,7 @@ sliderPrincipal = (req, res) => {
           err.message || "Some error occurred while retrieving customers."
       });
     }
-    else {
-      var jsonArr = [];
-      for (var i = 0; i < data.length; i++) {
-
-        //let urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        let urlimagen  ="";
-        if(data[i].primeraimagen != null){
-            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        }
-        jsonArr.push({
-          idlugar: data[i].idlugar,
-          nombre: data[i].nombre,
-          direccion: data[i].direccion,
-          latitud: data[i].latitud,
-          longitud: data[i].longitud,
-          descripcion: data[i].descripcion,
-          historia: data[i].historia,
-          resena: data[i].resena,
-          love: data[i].love,
-          comentario: data[i].comentario,
-          rating: data[i].rating,
-          primeraimagen:data[i].primeraimagen,
-          nombreclasificacion: data[i].nombreclasificacion, 
-          principal: data[i].principal
-        });
-      }
+    else { 
       res.send({
         success: true,
         message: "Si encontro resultado",
@@ -47,7 +21,7 @@ sliderPrincipal = (req, res) => {
       });
     }
   });
-};
+}
 obtenerLugares = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -75,7 +49,7 @@ obtenerLugares = (req, res) => {
       });
     }
   });
-};
+}
 obtenerImagenesLugar = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -92,28 +66,15 @@ obtenerImagenesLugar = (req, res) => {
           err.message || "Some error occurred while retrieving customers."
       });
     }
-    else {
-      var jsonArr2 = [];
-      for (var i = 0; i < data.length; i++) { 
-        let urlimagen  ="";
-        if(data[i].nombre != null ){
-            urlimagen = process.env.CONF_URL+ data[i].nombre;
-        }
-       // let urlimagen = process.env.CONF_URL + data[i].nombre; 
-        jsonArr2.push({
-          idimagen:data[i].idimagen, 
-          idlugar: data[i].idlugar, 
-          nombre:urlimagen
-        });
-      }
+    else { 
       res.send({
         success: true,
         message: "Si encontro resultado",
-        data: jsonArr2,
+        data: data,
       });
     }
   });
-};
+}
 sliderLugaresTops = (req, res) => {
   Lugar.sliderLugaresTops((err, data) => {
     if (err){
@@ -123,32 +84,7 @@ sliderLugaresTops = (req, res) => {
           err.message || "Some error occurred while retrieving customers."
       });
     }
-    else {
-      var jsonArr = [];
-      for (var i = 0; i < data.length; i++) {
-
-       // let urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        let urlimagen  ="";
-        if(data[i].primeraimagen != null ){
-            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        }
-        jsonArr.push({
-          idlugar: data[i].idlugar,
-          nombre: data[i].nombre,
-          direccion: data[i].direccion,
-          latitud: data[i].latitud,
-          longitud: data[i].longitud,
-          descripcion: data[i].descripcion,
-          historia: data[i].historia,
-          resena: data[i].resena,
-          love: data[i].love,
-          comentario: data[i].comentario,
-          rating: data[i].rating,
-          primeraimagen: data[i].primeraimagen,
-          nombreclasificacion: data[i].nombreclasificacion, 
-          principal: data[i].principal
-        });
-      }
+    else { 
       res.send({
       success: true,
       message: "Exito",
@@ -156,8 +92,7 @@ sliderLugaresTops = (req, res) => {
     });
   }
   });
-};
-
+}
 obtenerTodosLugares = (req, res) => {
   Lugar.obtenerTodosLugares((err, data) => {
     if (err){
@@ -176,7 +111,26 @@ obtenerTodosLugares = (req, res) => {
     });
   }
   });
-};
+}
+obtenerClasificacionLugar = (req, res) => {
+  ClasificacionLugar.clasificaciones((err, data) => {
+    if (err){
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else {
+       
+      res.send({
+      success: true,
+      message: "Exito",
+      data: data
+    });
+  }
+  });
+}
 obtenerTodosLugaresCercanos = (req, res) => {
   if (!req.body) {
     res.status(400).send({
@@ -203,7 +157,7 @@ obtenerTodosLugaresCercanos = (req, res) => {
     });
   }
   });
-};
+}
 sliderRutasTops = (req, res) => {
   Ruta.sliderRutasTops((err, data) => {
     if (err){
@@ -222,8 +176,7 @@ sliderRutasTops = (req, res) => {
     });
   }
   });
-};
-
+}
 buscarLugaresActivos = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -251,9 +204,7 @@ buscarLugaresActivos = (req, res) => {
       });
     }
   });
-};
-
-
+}
 buscarLugaresActivosIn = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -281,8 +232,7 @@ buscarLugaresActivosIn = (req, res) => {
       });
     }
   });
-};
-
+}
 obtenerLugaresPorCategoria = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -338,9 +288,7 @@ obtenerLugaresPorCategoria = (req, res) => {
       });
     }
   });
-};
-
-
+}
 obtenerLugaresDentroLugar = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -394,8 +342,7 @@ obtenerLugaresDentroLugar = (req, res) => {
       });
     }
   });
-};
-
+}
 obtenerDetalleLugar = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -415,35 +362,7 @@ obtenerDetalleLugar = (req, res) => {
         error: err.message
       });
     }
-    else {
-      var jsonArr = [];
-      for (var i = 0; i < data.length; i++) {
-
-       // let urlimagen = 'http://10.0.2.2:3000/' + data[i].primeraimagen;
-
-       // let urlimagen =  process.env.CONF_URL+ data[i].primeraimagen;
-        let urlimagen  ="";
-        if(data[i].primeraimagen != null  ){
-            urlimagen = process.env.CONF_URL+ data[i].primeraimagen;
-        }
-        jsonArr.push({
-          idlugar: data[i].idlugar,
-          nombre: data[i].nombre,
-          direccion: data[i].direccion,
-          latitud: data[i].latitud,
-          longitud: data[i].longitud,
-          descripcion: data[i].descripcion,
-          historia: data[i].historia,
-          resena: data[i].resena,
-          love: data[i].love,
-          comentario: data[i].comentario,
-          primeraimagen: urlimagen,
-          nombreclasificacion: data[i].nombreclasificacion,
-          //imagenes : data[i].imagenes,
-          //actividades : data[i].actividades,
-          principal: data[i].principal
-        });
-      }
+    else { 
       res.send({
         success: true,
         message: "Si encontro resultado",
@@ -451,8 +370,77 @@ obtenerDetalleLugar = (req, res) => {
       });
     }
   });
-};
-
+}
+subirPhotoLugar = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  const nombrelugar = req.body.nombrelugar;
+ // console.log(req.files);
+ // const upload = Object.values(req.files); 
+  console.log(req.files.file.name);
+    const fileName = `${nombrelugar.replace(/ /g, "")}_${req.uid}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(req.files.file.name).ext}`;
+    const fileType = req.files.file.mimetype;
+    const bucketName = process.env.AWS_BUCKET_NAME;
+    const region = process.env.AWS_BUCKET_REGION;
+    const accessKeyId = process.env.AWS_ACCESS_KEY;
+    const secretAccessKey = process.env.AWS_SECRET_KEY;
+    const s3 = new aws({
+      region,
+      accessKeyId,
+      secretAccessKey,
+    });
+    const uploadParams = {
+      Bucket: bucketName,
+      Body: req.files.file.data,
+      Key: fileName,
+      ContentType: fileType,
+    };
+    var s3upload = s3.upload(uploadParams).promise();
+    s3upload
+      .then(function (data) {
+        const imagen = new ImagenLugar({
+          idlugar:req.body.idlugar,
+          nombreimagen: fileName, 
+          url: `https://${bucketName}.s3.amazonaws.com/${fileName}`,
+          tipousuario :0,
+          idusuario :req.uid,
+          fecha: new Date(),
+        });
+        ImagenLugar.subirFotosLugar(imagen, (err, data) => {
+          if (err) {
+            res.status(500).send({
+              success: false,
+              message:
+                err.message || "Some error occurred while creating the Customer.",
+              error: err.message
+            });
+          }
+          else {
+      
+            res.send({
+              success: true,
+              message: "Si encontro resultado",
+              data: data,
+            });
+          }
+        });
+      })
+      .catch(function (err) {
+        console.log(err);
+        res.status(404).send({
+          success: false,
+          message: err,
+          data: err,
+        });
+      });
+ 
+  
+}
 
 
 
@@ -468,5 +456,7 @@ module.exports = {
   buscarLugaresActivosIn, 
   obtenerTodosLugares,
   obtenerTodosLugaresCercanos,
-  obtenerLugares
+  obtenerLugares,
+  subirPhotoLugar,
+  obtenerClasificacionLugar
 }

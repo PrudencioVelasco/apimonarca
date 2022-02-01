@@ -185,7 +185,7 @@ Comentario.obtenerComentariosLugar = (
   let sql =
     "select u.uid, u.idusuario,  u.userName,  u.imageUrl,  c.idcomentario , c.comentario , c.rating , " +
     "DATE_FORMAT(c.fechavisito,'%d/%m/%Y') AS fecha, " +
-    "(  SELECT  CAST( CONCAT(  '[', GROUP_CONCAT(  JSON_OBJECT( 'idimagencomentariolugar',  img.idimagencomentariolugar,  'nombreimagen', img.nombreimagen, 'imagenurl', img.imagenurl  ) SEPARATOR ','  ), ']' ) AS JSON  ) AS bk FROM tblimagen_comentario_lugar img  WHERE  (img.idcomentariolugar = c.idcomentario)) AS imagenes"+
+    "(  SELECT cast( json_arrayagg( JSON_OBJECT( 'idimagencomentariolugar', img.idimagencomentariolugar, 'nombreimagen', img.nombreimagen, 'imagenurl', img.imagenurl ) ) as JSON ) as bk FROM tblimagen_comentario_lugar img  WHERE  (img.idcomentariolugar = c.idcomentario)) AS imagenes"+
     " from " +
     " tblcomentariolugar c inner join tbluser u on   u.idusuario = c.idusuario " +
     "where c.idlugar  = ? and c.eliminado = 0 ";
@@ -375,6 +375,19 @@ Comentario.totalComentarioLugar = (idlugar, result) => {
     }
   );
 };
+Comentario.comentariosLugarAdmin = (idlugar, result) => {
+  let sql = `select * from vwcomentarioslugar where idlugar IN (${idlugar}) `;
+  dbConn.query(sql, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+}
 Comentario.totalComentarioLugarUsuario = (idlugar,idusuario, result) => {
   dbConn.query(
     "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentariolugar c WHERE c.eliminado = 0 AND c.idlugar = ? AND c.idusuario = ? ",

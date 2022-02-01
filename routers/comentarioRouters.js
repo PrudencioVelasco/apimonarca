@@ -31,4 +31,7 @@ module.exports = app => {
     app.post("/monarca/comentario/obtenerComentariosCompania",comentarioController.obtenerComentariosCompania);  
     app.post("/monarca/comentario/eliminarComentarioCompania",validarJWT, comentarioController.eliminarComentarioCompania);  
   
+    app.post("/monarca/comentario/obtenerComentariosLugarAdmin", comentarioController.obtenerComentariosLugarAdmin); 
+   
+
 }

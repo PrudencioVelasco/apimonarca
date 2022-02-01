@@ -548,6 +548,35 @@ obtenerComentariosLugar = (req, res) => {
     }
   });
 }
+obtenerComentariosLugarAdmin = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  let idlugar = req.body.idlugar; 
+  Comentario.comentariosLugarAdmin(idlugar,  (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
 eliminarComentariov2 = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -834,5 +863,6 @@ module.exports = {
   subirFotosComentarioTour,
   subirFotosTour,
   eliminarComentarioCompania,
-  obtenerComentariosCompania
+  obtenerComentariosCompania,
+  obtenerComentariosLugarAdmin
 }

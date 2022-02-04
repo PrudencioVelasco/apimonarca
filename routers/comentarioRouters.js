@@ -28,9 +28,12 @@ module.exports = app => {
     app.put("/monarca/comentario/subirFotosComentarioTour",validarJWT,comentarioController.subirFotosComentarioTour); 
     app.put("/monarca/comentario/subirFotosTour",validarJWT,comentarioController.subirFotosTour); 
 
+    app.post("/monarca/comentario/agregarComentarioCompania",validarJWT,comentarioController.agregarComentarioCompania); 
     app.post("/monarca/comentario/obtenerComentariosCompania",comentarioController.obtenerComentariosCompania);  
+    app.put("/monarca/comentario/subirFotosComentarioCompania",validarJWT,comentarioController.subirFotosComentarioCompania); 
     app.post("/monarca/comentario/eliminarComentarioCompania",validarJWT, comentarioController.eliminarComentarioCompania);  
-  
+    app.post("/monarca/comentario/totalComentarioCompania", comentarioController.totalComentarioCompania); 
+
     app.post("/monarca/comentario/obtenerComentariosLugarAdmin", comentarioController.obtenerComentariosLugarAdmin); 
    
 

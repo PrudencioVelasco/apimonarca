@@ -1,5 +1,11 @@
-const { Comentario, ComentarioLugar, ReporteComentarioLugar, ComentarioTour, ReporteComentarioTour } = require('../models/comentario');
-const {ImagenComentarioLugar,ImagenLugar,ImagenComentarioTour,ImagenTour} = require('../models/imagen_comentarios');
+const { 
+  Comentario, 
+  ComentarioLugar, 
+  ReporteComentarioLugar, 
+  ComentarioTour, 
+  ReporteComentarioTour,
+  ComentarioCompania } = require('../models/comentario');
+const {ImagenComentarioLugar,ImagenLugar,ImagenComentarioTour,ImagenComentarioCompania,ImagenTour} = require('../models/imagen_comentarios');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const keys = require('../config/key');
@@ -167,6 +173,49 @@ agregarComentarioLugar = (req, res) => {
     }
   });
 }
+
+agregarComentarioCompania = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  const comentario = new ComentarioCompania({
+    idcompania: req.body.idcompania,
+    idconquienvisito: req.body.idconquienvisito,
+    rating: req.body.rating,
+    comentario: req.body.comentario,
+    fechavisito: req.body.fechavisito,
+    eliminado: 0,
+    fecharegistro: new Date(),
+    idusuario: req.uid,
+  });
+
+  // Save Customer in the database
+  Comentario.insertarComentarioCompania(comentario, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Registrado con exito!",
+        data: data.id,
+      });
+
+
+    }
+  });
+}
 agregarComentarioTour = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -225,10 +274,16 @@ subirFotosComentarioLugar = (req, res) => {
   var errores = 0;
   var exitos = 0;
   const idcomentario = req.body.idcomentario;
+  //if(req.files.multipartFiles != null){
+	 
   const uploads = Object.values(req.files.multipartFiles);
-  uploads.forEach(async (upload) => {
-    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(upload.name).ext}`;
-    const fileType = upload.mimetype;
+ 
+  //console.log(req.files.multipartFiles);
+var files = [].concat(req.files.multipartFiles);
+for(var x = 0; x < files.length; x++){
+	file = files[x];
+  const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(file.name).ext}`;
+    const fileType = file.mimetype;
     const bucketName = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_BUCKET_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY;
@@ -240,7 +295,7 @@ subirFotosComentarioLugar = (req, res) => {
     });
     const uploadParams = {
       Bucket: bucketName,
-      Body: upload.data,
+      Body: file.data,
       Key: fileName,
       ContentType: fileType,
     };
@@ -264,7 +319,76 @@ subirFotosComentarioLugar = (req, res) => {
       .catch(function (err) {
         errores += 1;
       });
-  });
+}  
+//}
+  if (errores == 0) {
+    res.send({
+      success: true,
+      message: "Se subieron las fotos con exito.",
+      data: "",
+    });
+  } else {
+
+    res.send({
+      success: true,
+      message: "Algunas fotos no fueron subidas!",
+      data: "",
+    });
+  }
+}
+subirFotosComentarioCompania = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+  var errores = 0;
+  var exitos = 0;
+  const idcomentario = req.body.idcomentario; 
+var files = [].concat(req.files.multipartFiles);
+for(var x = 0; x < files.length; x++){
+	file = files[x];
+  const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(file.name).ext}`;
+    const fileType = file.mimetype;
+    const bucketName = process.env.AWS_BUCKET_NAME;
+    const region = process.env.AWS_BUCKET_REGION;
+    const accessKeyId = process.env.AWS_ACCESS_KEY;
+    const secretAccessKey = process.env.AWS_SECRET_KEY;
+    const s3 = new aws({
+      region,
+      accessKeyId,
+      secretAccessKey,
+    });
+    const uploadParams = {
+      Bucket: bucketName,
+      Body: file.data,
+      Key: fileName,
+      ContentType: fileType,
+    };
+    var s3upload = s3.upload(uploadParams).promise();
+    s3upload
+      .then(function (data) {
+        const imagen = new ImagenComentarioCompania({
+          idcomentariocompania: idcomentario,
+          nombreimagen: fileName,
+          imagenurl: `https://${bucketName}.s3.amazonaws.com/${fileName}`,
+        });
+        ImagenComentarioCompania.insertarImagenComentarioCompania(imagen, (err, data) => {
+          if (err) {
+            errores += 1;
+          }
+          else {
+            exitos += 1;
+          }
+        });
+      })
+      .catch(function (err) {
+        errores += 1;
+      });
+}  
+//}
   if (errores == 0) {
     res.send({
       success: true,
@@ -291,10 +415,11 @@ subirFotosComentarioTour = (req, res) => {
   var errores = 0;
   var exitos = 0;
   const idcomentariotour = req.body.idcomentariotour;
-  const uploads = Object.values(req.files.multipartFiles);
-  uploads.forEach(async (upload) => {
-    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(upload.name).ext}`;
-    const fileType = upload.mimetype;
+  var files = [].concat(req.files.multipartFiles);
+  for(var x = 0; x < files.length; x++){
+    file = files[x];
+    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}_${numeroAleatorio(0, 2000)}${path.parse(file.name).ext}`;
+    const fileType = file.mimetype;
     const bucketName = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_BUCKET_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY;
@@ -306,7 +431,7 @@ subirFotosComentarioTour = (req, res) => {
     });
     const uploadParams = {
       Bucket: bucketName,
-      Body: upload.data,
+      Body: file.data,
       Key: fileName,
       ContentType: fileType,
     };
@@ -330,7 +455,7 @@ subirFotosComentarioTour = (req, res) => {
       .catch(function (err) {
         errores += 1;
       });
-  });
+  };
   if (errores == 0) {
     res.send({
       success: true,
@@ -357,10 +482,11 @@ subirFotosLugar=(req, res)=>{
   var exitos = 0;
   const idlugar = req.body.idlugar;
   const idusuario = req.uid;
-  const uploads = Object.values(req.files.multipartFiles);
-  uploads.forEach(async (upload) => {
-    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(upload.name).ext}`;
-    const fileType = upload.mimetype;
+ var files = [].concat(req.files.multipartFiles);
+for(var x = 0; x < files.length; x++){
+	file = files[x];
+    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(file.name).ext}`;
+    const fileType = file.mimetype;
     const bucketName = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_BUCKET_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY;
@@ -372,7 +498,7 @@ subirFotosLugar=(req, res)=>{
     });
     const uploadParams = {
       Bucket: bucketName,
-      Body: upload.data,
+      Body: file.data,
       Key: fileName,
       ContentType: fileType,
     };
@@ -400,7 +526,7 @@ subirFotosLugar=(req, res)=>{
       .catch(function (err) {
         errores += 1;
       });
-  });
+  }
   if (errores == 0) {
     res.send({
       success: true,
@@ -427,10 +553,11 @@ subirFotosTour=(req, res)=>{
   var exitos = 0;
   const idtour = req.body.idtour;
   const idusuario = req.uid;
-  const uploads = Object.values(req.files.multipartFiles);
-  uploads.forEach(async (upload) => {
-    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(upload.name).ext}`;
-    const fileType = upload.mimetype;
+  var files = [].concat(req.files.multipartFiles);
+  for(var x = 0; x < files.length; x++){
+    file = files[x];
+    const fileName = `photo_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 10012)}_${numeroAleatorio(0, 2000)}${path.parse(file.name).ext}`;
+    const fileType = file.mimetype;
     const bucketName = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_BUCKET_REGION;
     const accessKeyId = process.env.AWS_ACCESS_KEY;
@@ -442,7 +569,7 @@ subirFotosTour=(req, res)=>{
     });
     const uploadParams = {
       Bucket: bucketName,
-      Body: upload.data,
+      Body: file.data,
       Key: fileName,
       ContentType: fileType,
     };
@@ -470,7 +597,7 @@ subirFotosTour=(req, res)=>{
       .catch(function (err) {
         errores += 1;
       });
-  });
+  };
   if (errores == 0) {
     res.send({
       success: true,
@@ -751,6 +878,35 @@ totalComentarioLugar = (req, res) => {
     }
   });
 }
+totalComentarioCompania = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+
+  let idcompania = req.body.idcompania;
+  Comentario.totalComentarioCompania(idcompania, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data.totalcomentario,
+      });
+    }
+  });
+}
 totalComentarioLugarUsuario = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -864,5 +1020,8 @@ module.exports = {
   subirFotosTour,
   eliminarComentarioCompania,
   obtenerComentariosCompania,
+  agregarComentarioCompania,
+  subirFotosComentarioCompania,
+  totalComentarioCompania,
   obtenerComentariosLugarAdmin
 }

@@ -11,6 +11,13 @@ const ImagenComentarioTour = function (row) {
   this.nombreimagen  = row.nombreimagen; 
   this.imagenurl  = row.imagenurl; 
 };
+const ImagenComentarioCompania = function (row) {
+  this.idimagencomentariocompania  = row.idimagencomentariocompania;
+  this.idcomentariocompania  = row.idcomentariocompania ;
+  this.nombreimagen  = row.nombreimagen; 
+  this.imagenurl  = row.imagenurl; 
+};
+
 const ImagenLugar= function (row){
   this.idimagenlugar = row.idimagenlugar;
   this.idlugar = row.idlugar;
@@ -33,6 +40,18 @@ const ImagenTour= function (row){
 
 ImagenComentarioLugar.insertarImagenComentarioLugar = (newComentario, result) => {
     dbConn.query("INSERT INTO tblimagen_comentario_lugar SET ?", newComentario, (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      console.log("created customer: ", { id: res.insertId });
+      result(null, { id: res.insertId, ...newComentario });
+    });
+  }
+  ImagenComentarioCompania.insertarImagenComentarioCompania = (newComentario, result) => {
+    dbConn.query("INSERT INTO tblimagen_comentario_compania SET ?", newComentario, (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -80,4 +99,4 @@ ImagenComentarioLugar.insertarImagenComentarioLugar = (newComentario, result) =>
     });
   }
  
-module.exports = {ImagenComentarioLugar,ImagenLugar,ImagenComentarioTour,ImagenTour}
+module.exports = {ImagenComentarioLugar,ImagenLugar,ImagenComentarioTour,ImagenTour,ImagenComentarioCompania}

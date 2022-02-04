@@ -97,6 +97,7 @@ Comentario.insertarComentarioLugar = (newComentario, result) => {
     result(null, { id: res.insertId, ...newComentario });
   });
 };
+
 Comentario.insertarComentarioTour = (newComentario, result) => {
   dbConn.query("INSERT INTO tblcomentariotour SET ?", newComentario, (err, res) => {
     if (err) {
@@ -375,6 +376,27 @@ Comentario.totalComentarioLugar = (idlugar, result) => {
     }
   );
 };
+Comentario.totalComentarioCompania= (idcompania, result) => {
+  dbConn.query(
+    "SELECT COUNT(c.idcomentario) as totalcomentario FROM tblcomentariocompania c WHERE c.eliminado = 0 AND c.idcompania = ? ",
+    [idcompania],
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+      if (res.length) {
+        console.log("found customer: ", res[0]);
+        result(null, res[0]);
+        return;
+      }
+
+      // not found Customer with the id
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
 Comentario.comentariosLugarAdmin = (idlugar, result) => {
   let sql = `select * from vwcomentarioslugar where idlugar IN (${idlugar}) `;
   dbConn.query(sql, (err, res) => {
@@ -413,5 +435,7 @@ module.exports = {
   Comentario,
   ComentarioLugar,
   ReporteComentarioLugar,
-  ComentarioTour
+  ComentarioTour,
+  ReporteComentarioTour,
+  ComentarioCompania
 };

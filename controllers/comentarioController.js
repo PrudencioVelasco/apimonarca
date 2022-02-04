@@ -4,7 +4,8 @@ const {
   ReporteComentarioLugar, 
   ComentarioTour, 
   ReporteComentarioTour,
-  ComentarioCompania } = require('../models/comentario');
+  ComentarioCompania,
+  ReporteComentarioCompania } = require('../models/comentario');
 const {ImagenComentarioLugar,ImagenLugar,ImagenComentarioTour,ImagenComentarioCompania,ImagenTour} = require('../models/imagen_comentarios');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
@@ -61,8 +62,7 @@ agregarReporteComentarioLugar = (req, res) => {
   const reporte = new ReporteComentarioLugar({
     idcomentario: req.body.idcomentario,
     idcausareporte: req.body.idcausareporte,
-    comentario: req.body.comentario,
-    idusuario: req.uid,
+    comentario: req.body.comentario, 
     fecharegistro: new Date(),
     atendido: 0,
     eliminado: 0
@@ -70,6 +70,47 @@ agregarReporteComentarioLugar = (req, res) => {
 
   // Save Customer in the database
   Comentario.insertarReporteComentarioLugar(reporte, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else {
+
+      res.send({
+        success: true,
+        message: "Registrado con exito!",
+        data: data.id,
+      });
+
+
+    }
+  });
+}
+
+agregarReporteComentarioCompania = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      success: false,
+      message: "Content can not be empty!"
+    });
+  }
+console.log(req);
+  const reportecompania = new ReporteComentarioCompania({
+    idcomentario: req.body.idcomentario,
+    idcausareporte: req.body.idcausareporte,
+    comentario: req.body.comentario, 
+    fecharegistro: new Date(),
+    atendido: 0,
+    eliminado: 0
+  });
+
+  // Save Customer in the database
+  Comentario.insertarReporteComentarioCompania(reportecompania, (err, data) => {
     if (err) {
       res.status(500).send({
         success: false,
@@ -102,8 +143,7 @@ agregarReporteComentarioTour = (req, res) => {
   const reporte = new ReporteComentarioTour({
     idcomentario: req.body.idcomentario,
     idcausareporte: req.body.idcausareporte,
-    comentario: req.body.comentario,
-    idusuario: req.uid,
+    comentario: req.body.comentario, 
     fecharegistro: new Date(),
     atendido: 0,
     eliminado: 0
@@ -1023,5 +1063,6 @@ module.exports = {
   agregarComentarioCompania,
   subirFotosComentarioCompania,
   totalComentarioCompania,
+  agregarReporteComentarioCompania,
   obtenerComentariosLugarAdmin
 }

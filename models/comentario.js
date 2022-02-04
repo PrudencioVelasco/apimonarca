@@ -32,8 +32,7 @@ const ReporteComentarioLugar = function (comentario) {
   this.idreportecomentariolugar = comentario.idreportecomentariolugar;
   this.idcomentario  = comentario.idcomentario;
   this.idcausareporte = comentario.idcausareporte;
-  this.comentario   = comentario.comentario;
-  this.idusuario = comentario.idusuario;
+  this.comentario   = comentario.comentario; 
   this.fecharegistro = comentario.fecharegistro;
   this.atendido  = comentario.atendido;
   this.eliminado  = comentario.eliminado; 
@@ -42,8 +41,16 @@ const ReporteComentarioTour = function (comentario) {
   this.idreportecomentariotour = comentario.idreportecomentariotour;
   this.idcomentario  = comentario.idcomentario;
   this.idcausareporte = comentario.idcausareporte;
-  this.comentario   = comentario.comentario;
-  this.idusuario = comentario.idusuario;
+  this.comentario   = comentario.comentario; 
+  this.fecharegistro = comentario.fecharegistro;
+  this.atendido  = comentario.atendido;
+  this.eliminado  = comentario.eliminado; 
+};
+const ReporteComentarioCompania = function (comentario) {
+  this.idreportecomentariocompania  = comentario.idreportecomentariocompania ;
+  this.idcomentario  = comentario.idcomentario;
+  this.idcausareporte = comentario.idcausareporte;
+  this.comentario   = comentario.comentario; 
   this.fecharegistro = comentario.fecharegistro;
   this.atendido  = comentario.atendido;
   this.eliminado  = comentario.eliminado; 
@@ -112,6 +119,19 @@ Comentario.insertarComentarioTour = (newComentario, result) => {
 };
 Comentario.insertarReporteComentarioLugar = (newReporteComentario, result) => {
   dbConn.query("INSERT INTO tblreportecomentariolugar SET ?", newReporteComentario, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    console.log("created customer: ", { id: res.insertId });
+    result(null, { id: res.insertId, ...newReporteComentario });
+  });
+
+};
+Comentario.insertarReporteComentarioCompania = (newReporteComentario, result) => {
+  dbConn.query("INSERT INTO tblreportecomentariocompania SET ?", newReporteComentario, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -437,5 +457,6 @@ module.exports = {
   ReporteComentarioLugar,
   ComentarioTour,
   ReporteComentarioTour,
-  ComentarioCompania
+  ComentarioCompania,
+  ReporteComentarioCompania
 };

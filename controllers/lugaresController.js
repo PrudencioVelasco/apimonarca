@@ -407,7 +407,7 @@ subirPhotoLugar = (req, res) => {
           idlugar:req.body.idlugar,
           nombreimagen: fileName, 
           url: `https://${bucketName}.s3.amazonaws.com/${fileName}`,
-          tipousuario :0,
+          tipousuario :1,
           idusuario :req.uid,
           fecha: new Date(),
         });

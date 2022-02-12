@@ -138,7 +138,7 @@ Lugar.obtenerTodosLugaresCercano = (latitud,longitud,result) => {
        * COS(RADIANS(${latitud}))
        * COS(RADIANS(l.longitud - ${longitud}))
        + SIN(RADIANS(l.latitud))
-       * SIN(RADIANS(${latitud}))))) AS distancia from vwtodoslugaresactivo l WHERE  l.latitud != 0 AND l.longitud != 0  HAVING distancia < 100.0   
+       * SIN(RADIANS(${latitud}))))) AS distancia from vwtodoslugaresactivo l WHERE  l.latitud != 0 AND l.longitud != 0  HAVING distancia < 70.0   
        ORDER BY distancia ASC`;
   dbConn.query(sql, (err, res) => { 
     if (err) {

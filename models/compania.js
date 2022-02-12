@@ -47,7 +47,7 @@ Compania.mostrarCompaniasCercano = (idclasificacion, latitud, longitud, result) 
          * COS(RADIANS(${latitud}))
          * COS(RADIANS(c.longitud - ${longitud}))
          + SIN(RADIANS(c.latitud))
-         * SIN(RADIANS(${latitud}))))) AS distancia FROM vwcompania c WHERE c.idclasificacion  = ${idclasificacion} AND  c.latitud != 0 AND c.longitud != 0  HAVING distancia < 100.0`;
+         * SIN(RADIANS(${latitud}))))) AS distancia FROM vwcompania c WHERE c.idclasificacion  = ${idclasificacion} AND  c.latitud != 0 AND c.longitud != 0  HAVING distancia < 70.0`;
   dbConn.query(sql, (err, res) => {
     if (err) {
       console.log("error: ", err);

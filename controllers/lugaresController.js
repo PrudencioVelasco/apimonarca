@@ -93,6 +93,24 @@ sliderLugaresTops = (req, res) => {
   }
   });
 }
+lugaresDentroSliders = (req, res) => {
+  Lugar.lugaresDentroSliders((err, data) => {
+    if (err){
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while retrieving customers."
+      });
+    }
+    else { 
+      res.send({
+      success: true,
+      message: "Exito",
+      data: data
+    });
+  }
+  });
+}
 obtenerTodosLugares = (req, res) => {
   Lugar.obtenerTodosLugares((err, data) => {
     if (err){
@@ -458,5 +476,6 @@ module.exports = {
   obtenerTodosLugaresCercanos,
   obtenerLugares,
   subirPhotoLugar,
-  obtenerClasificacionLugar
+  obtenerClasificacionLugar,
+  lugaresDentroSliders
 }

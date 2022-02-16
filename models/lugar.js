@@ -175,6 +175,18 @@ ClasificacionLugar.clasificaciones = result => {
     result(null, res);
   });
 }
+Lugar.lugaresDentroSliders = result => {
+  dbConn.query("SELECT * FROM vwslider", (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    console.log("customers: ", res);
+    result(null, res);
+  });
+}
 Lugar.sliderLugaresTops = result => {
   dbConn.query("SELECT * FROM vwslider  WHERE idtiposlider = 2 ", (err, res) => {
     if (err) {

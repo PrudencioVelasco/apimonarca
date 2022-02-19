@@ -62,4 +62,15 @@ Ruta.obtenerLugaresRuta = (idruta,result)=>{
     result({ kind: "not_found" }, null);
   });
 }
+Ruta.rutasConLugares = result => {
+    dbConn.query("select r.* from tblruta r inner join tblrutalugar rl on r.idruta = rl.idruta group  by r.idruta", (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        } 
+        console.log("customers: ", res);
+        result(null, res);
+    });
+};
 module.exports = Ruta;

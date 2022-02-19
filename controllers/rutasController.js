@@ -146,9 +146,31 @@ obtenerDetalleRuta = (req, res) => {
     }
   });
 };
+rutasConLugares = (req, res) => {
+  // Validate request
+ 
+  Ruta.rutasConLugares ((err, data) => {
+    if (err) {
+      res.status(500).send({
+        success: false,
+        message:
+          err.message || "Some error occurred while creating the Customer.",
+        error: err.message
+      });
+    }
+    else { 
+      res.send({
+        success: true,
+        message: "Si encontro resultado",
+        data: data,
+      });
+    }
+  });
+}
 module.exports = {
   todasRutasVisibles,
     obtenerLugaresRuta,
     todasRutasPrincipales,
-	obtenerDetalleRuta
+	obtenerDetalleRuta,
+	rutasConLugares
 }
